@@ -1,1 +1,151 @@
 
+
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f0f2f5; padding: 1rem; }
+    .fixed-btns { position: fixed; bottom: 10px; right: 10px; display: flex; gap: 0.5rem; }
+    .expense-date { font-size: 0.8rem; color: gray; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h4 class="mb-3 text-center">Expense Tracker</h4>  <input type="month" id="monthFilter" class="form-control mb-3" />  <form id="expenseForm" class="card card-body mb-3">
+    <select class="form-select mb-2" id="person" required>
+      <option value="">Who spent?</option>
+      <option value="Kashif">Kashif</option>
+      <option value="Salim">Salim</option>
+    </select>
+    <input type="text" id="desc" class="form-control mb-2" placeholder="What for?" required />
+    <input type="number" id="amount" class="form-control mb-2" placeholder="Amount in Rs" required />
+    <button class="btn btn-primary" type="submit">Add Expense</button>
+  </form>  <div class="card mb-3">
+    <div class="card-body text-center" id="summaryCard"></div>
+  </div>  <ul class="list-group" id="expenseList"></ul>  <input type="file" id="importFile" hidden>
+  <div class="fixed-btns">
+    <button class="btn btn-outline-secondary" onclick="document.getElementById('importFile').click()">Import</button>
+    <button class="btn btn-outline-success" onclick="exportExpenses()">Export</button>
+  </div>
+</div><script>
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  document.getElementById("expenseForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const expense = {
+      person: person.value,
+      desc: desc.value,
+      amount: parseFloat(amount.value),
+      date: new Date().toISOString(),
+      history: []
+    };
+    expenses.push(expense);
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    this.reset();
+    updateUI();
+  });
+
+  document.getElementById("monthFilter").addEventListener("change", updateUI);
+
+  function updateUI() {
+    const list = document.getElementById("expenseList");
+    list.innerHTML = "";
+
+    const selectedMonth = document.getElementById("monthFilter").value;
+    const filtered = selectedMonth
+      ? expenses.filter(e => new Date(e.date).toISOString().slice(0, 7) === selectedMonth)
+      : expenses;
+
+    const totals = {};
+    let totalAmount = 0;
+
+    filtered.forEach((e, index) => {
+      if (!totals[e.person]) totals[e.person] = 0;
+      totals[e.person] += e.amount;
+      totalAmount += e.amount;
+
+      const li = document.createElement("li");
+      li.className = "list-group-item";
+      li.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <strong>${e.person}</strong> - ${e.desc}
+            <div class="expense-date">${new Date(e.date).toLocaleString()}</div>
+          </div>
+          <div class="text-end">
+            <span class="badge bg-secondary">Rs ${e.amount}</span>
+            <button class="btn btn-sm btn-outline-primary ms-2" onclick="editExpense(${index})">Edit</button>
+          </div>
+        </div>
+        ${e.history && e.history.length > 0 ? `<details><summary>Edit History</summary><ul>` + e.history.map(h => `<li>${h.person} - ${h.desc} - Rs ${h.amount} on ${new Date(h.date).toLocaleString()}</li>`).join('') + `</ul></details>` : ''}
+      `;
+      list.appendChild(li);
+    });
+
+    const summary = document.getElementById("summaryCard");
+    summary.innerHTML = Object.entries(totals).map(([p, amt]) => `<p><strong>${p}</strong>: Rs ${amt}</p>`).join('') + `<p><strong>Total:</strong> Rs ${totalAmount}</p>`;
+
+    const keys = Object.keys(totals);
+    if (keys.length === 2) {
+      const [p1, p2] = keys;
+      const diff = Math.abs(totals[p1] - totals[p2]) / 2;
+      if (diff > 0) {
+        const payer = totals[p1] > totals[p2] ? p2 : p1;
+        const payee = totals[p1] > totals[p2] ? p1 : p2;
+        summary.innerHTML += `<p><em>${payer} owes Rs ${diff.toFixed(2)} to ${payee}</em></p>`;
+      } else {
+        summary.innerHTML += `<p><em>Both are settled up!</em></p>`;
+      }
+    }
+  }
+
+  function editExpense(index) {
+    const old = expenses[index];
+    const person = prompt("Person (Kashif/Salim):", old.person);
+    const desc = prompt("Description:", old.desc);
+    const amount = prompt("Amount in Rs:", old.amount);
+
+    if (person && desc && amount) {
+      old.history = old.history || [];
+      old.history.push({ person: old.person, desc: old.desc, amount: old.amount, date: old.date });
+      old.person = person;
+      old.desc = desc;
+      old.amount = parseFloat(amount);
+      old.date = new Date().toISOString();
+
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+      updateUI();
+    }
+  }
+
+  function exportExpenses() {
+    const blob = new Blob([JSON.stringify(expenses, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "expenses_backup.txt";
+    a.click();
+  }
+
+  document.getElementById("importFile").addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      try {
+        expenses = JSON.parse(e.target.result);
+        localStorage.setItem("expenses", JSON.stringify(expenses));
+        updateUI();
+      } catch {
+        alert("Invalid file format.");
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  updateUI();
+</script></body>
+</html>
