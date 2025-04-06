@@ -1,151 +1,211 @@
-
-
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Expense Tracker</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Salim & Kashif - Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    body { background: #f0f2f5; padding: 1rem; }
-    .fixed-btns { position: fixed; bottom: 10px; right: 10px; display: flex; gap: 0.5rem; }
-    .expense-date { font-size: 0.8rem; color: gray; }
+    body {
+      background-color: #f9fafb;
+    }
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .history summary {
+      cursor: pointer;
+    }
+    .list-group-item {
+      border-left: 4px solid #6c63ff;
+    }
+    .form-label {
+      font-weight: 500;
+    }
+    .btn {
+      min-width: 90px;
+    }
+    @media (max-width: 576px) {
+      .form-control,
+      .form-select {
+        font-size: 14px;
+      }
+      .list-group-item {
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <h4 class="mb-3 text-center">Expense Tracker</h4>  <input type="month" id="monthFilter" class="form-control mb-3" />  <form id="expenseForm" class="card card-body mb-3">
-    <select class="form-select mb-2" id="person" required>
-      <option value="">Who spent?</option>
-      <option value="Kashif">Kashif</option>
-      <option value="Salim">Salim</option>
-    </select>
-    <input type="text" id="desc" class="form-control mb-2" placeholder="What for?" required />
-    <input type="number" id="amount" class="form-control mb-2" placeholder="Amount in Rs" required />
-    <button class="btn btn-primary" type="submit">Add Expense</button>
-  </form>  <div class="card mb-3">
-    <div class="card-body text-center" id="summaryCard"></div>
-  </div>  <ul class="list-group" id="expenseList"></ul>  <input type="file" id="importFile" hidden>
-  <div class="fixed-btns">
-    <button class="btn btn-outline-secondary" onclick="document.getElementById('importFile').click()">Import</button>
-    <button class="btn btn-outline-success" onclick="exportExpenses()">Export</button>
+<div class="container py-4 px-3">
+  <h3 class="text-center mb-4 fw-bold">Salim & Kashif – Transactions</h3>
+
+  <div class="card p-4 mb-4">
+    <form id="transaction-form">
+      <div class="row g-3">
+        <div class="col-sm-6 col-md-3">
+          <label class="form-label">Person</label>
+          <select class="form-select" id="name" required>
+            <option value="">Select</option>
+            <option value="Salim">Salim</option>
+            <option value="Kashif">Kashif</option>
+          </select>
+        </div>
+        <div class="col-sm-6 col-md-3">
+          <label class="form-label">Amount</label>
+          <input type="number" class="form-control" id="amount" placeholder="₹" required />
+        </div>
+        <div class="col-sm-12 col-md-4">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-control" id="description" placeholder="Milk, Travel..." required />
+        </div>
+        <input type="hidden" id="edit-index" />
+        <div class="col-sm-12 col-md-2 d-grid align-items-end">
+          <button type="submit" class="btn btn-primary mt-sm-4 mt-md-0">Save</button>
+        </div>
+      </div>
+    </form>
   </div>
-</div><script>
-  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-  document.getElementById("expenseForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const expense = {
-      person: person.value,
-      desc: desc.value,
-      amount: parseFloat(amount.value),
-      date: new Date().toISOString(),
-      history: []
-    };
-    expenses.push(expense);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    this.reset();
-    updateUI();
-  });
+  <div class="mb-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
+    <button class="btn btn-success" onclick="exportData()">Export JSON</button>
+    <input type="file" accept=".json" onchange="importData(event)" />
+  </div>
 
-  document.getElementById("monthFilter").addEventListener("change", updateUI);
+  <div class="card p-3 mb-5">
+    <h5 class="mb-3">Transaction List</h5>
+    <ul class="list-group" id="transaction-list"></ul>
+  </div>
+</div>
 
-  function updateUI() {
-    const list = document.getElementById("expenseList");
-    list.innerHTML = "";
+<script>
+  let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
-    const selectedMonth = document.getElementById("monthFilter").value;
-    const filtered = selectedMonth
-      ? expenses.filter(e => new Date(e.date).toISOString().slice(0, 7) === selectedMonth)
-      : expenses;
+  function saveTransactions() {
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+  }
 
-    const totals = {};
-    let totalAmount = 0;
+  function renderTransactions() {
+    const list = document.getElementById('transaction-list');
+    list.innerHTML = '';
 
-    filtered.forEach((e, index) => {
-      if (!totals[e.person]) totals[e.person] = 0;
-      totals[e.person] += e.amount;
-      totalAmount += e.amount;
+    const reversed = [...transactions].reverse();
 
-      const li = document.createElement("li");
-      li.className = "list-group-item";
-      li.innerHTML = `
-        <div class="d-flex justify-content-between align-items-start">
+    reversed.forEach((txn, reversedIndex) => {
+      const index = transactions.length - 1 - reversedIndex;
+      const item = document.createElement('li');
+      item.className = 'list-group-item mb-2';
+      item.innerHTML = `
+        <div class="d-flex justify-content-between flex-column flex-md-row align-items-start align-items-md-center">
           <div>
-            <strong>${e.person}</strong> - ${e.desc}
-            <div class="expense-date">${new Date(e.date).toLocaleString()}</div>
+            <strong>${txn.person}</strong> - ₹${txn.amount} : ${txn.desc}<br />
+            <small class="text-muted">Date: ${new Date(txn.date).toLocaleString()}</small>
           </div>
-          <div class="text-end">
-            <span class="badge bg-secondary">Rs ${e.amount}</span>
-            <button class="btn btn-sm btn-outline-primary ms-2" onclick="editExpense(${index})">Edit</button>
+          <div class="mt-2 mt-md-0">
+            <button class="btn btn-sm btn-outline-secondary me-2" onclick="editTransaction(${index})">Edit</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction(${index})">Delete</button>
           </div>
         </div>
-        ${e.history && e.history.length > 0 ? `<details><summary>Edit History</summary><ul>` + e.history.map(h => `<li>${h.person} - ${h.desc} - Rs ${h.amount} on ${new Date(h.date).toLocaleString()}</li>`).join('') + `</ul></details>` : ''}
+        ${txn.history?.length > 0 ? renderHistory(txn.history) : ''}
       `;
-      list.appendChild(li);
+      list.appendChild(item);
     });
+  }
 
-    const summary = document.getElementById("summaryCard");
-    summary.innerHTML = Object.entries(totals).map(([p, amt]) => `<p><strong>${p}</strong>: Rs ${amt}</p>`).join('') + `<p><strong>Total:</strong> Rs ${totalAmount}</p>`;
+  function renderHistory(history) {
+    return `
+      <details class="history mt-2">
+        <summary>View Edit History (${history.length})</summary>
+        <ul class="mt-2 ps-3">
+          ${history.map(h => `
+            <li>
+              ${h.person} - ₹${h.amount} : ${h.desc} 
+              <br><small class="text-muted">Edited: ${new Date(h.date).toLocaleString()}</small>
+            </li>
+          `).join('')}
+        </ul>
+      </details>
+    `;
+  }
 
-    const keys = Object.keys(totals);
-    if (keys.length === 2) {
-      const [p1, p2] = keys;
-      const diff = Math.abs(totals[p1] - totals[p2]) / 2;
-      if (diff > 0) {
-        const payer = totals[p1] > totals[p2] ? p2 : p1;
-        const payee = totals[p1] > totals[p2] ? p1 : p2;
-        summary.innerHTML += `<p><em>${payer} owes Rs ${diff.toFixed(2)} to ${payee}</em></p>`;
-      } else {
-        summary.innerHTML += `<p><em>Both are settled up!</em></p>`;
-      }
+  document.getElementById('transaction-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const person = document.getElementById('name').value;
+    const amount = parseFloat(document.getElementById('amount').value);
+    const desc = document.getElementById('description').value;
+    const date = new Date().toISOString();
+    const editIndex = document.getElementById('edit-index').value;
+
+    if (editIndex) {
+      const old = transactions[editIndex];
+      if (!old.history) old.history = [];
+      const { history, ...snapshot } = old;
+      old.history.push(snapshot);
+
+      transactions[editIndex] = {
+        person,
+        amount,
+        desc,
+        date,
+        history: old.history
+      };
+
+      document.getElementById('edit-index').value = '';
+    } else {
+      transactions.push({ person, amount, desc, date, history: [] });
+    }
+
+    saveTransactions();
+    renderTransactions();
+    this.reset();
+  });
+
+  function editTransaction(index) {
+    const txn = transactions[index];
+    document.getElementById('name').value = txn.person;
+    document.getElementById('amount').value = txn.amount;
+    document.getElementById('description').value = txn.desc;
+    document.getElementById('edit-index').value = index;
+  }
+
+  function deleteTransaction(index) {
+    if (confirm("Are you sure you want to delete this transaction?")) {
+      transactions.splice(index, 1);
+      saveTransactions();
+      renderTransactions();
     }
   }
 
-  function editExpense(index) {
-    const old = expenses[index];
-    const person = prompt("Person (Kashif/Salim):", old.person);
-    const desc = prompt("Description:", old.desc);
-    const amount = prompt("Amount in Rs:", old.amount);
-
-    if (person && desc && amount) {
-      old.history = old.history || [];
-      old.history.push({ person: old.person, desc: old.desc, amount: old.amount, date: old.date });
-      old.person = person;
-      old.desc = desc;
-      old.amount = parseFloat(amount);
-      old.date = new Date().toISOString();
-
-      localStorage.setItem("expenses", JSON.stringify(expenses));
-      updateUI();
-    }
+  function exportData() {
+    const blob = new Blob([JSON.stringify(transactions, null, 2)], { type: "application/json" });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = "transactions.json";
+    link.click();
   }
 
-  function exportExpenses() {
-    const blob = new Blob([JSON.stringify(expenses, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "expenses_backup.txt";
-    a.click();
-  }
-
-  document.getElementById("importFile").addEventListener("change", function () {
-    const file = this.files[0];
+  function importData(event) {
+    const file = event.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
       try {
-        expenses = JSON.parse(e.target.result);
-        localStorage.setItem("expenses", JSON.stringify(expenses));
-        updateUI();
-      } catch {
-        alert("Invalid file format.");
+        const data = JSON.parse(e.target.result);
+        if (Array.isArray(data)) {
+          transactions = data;
+          saveTransactions();
+          renderTransactions();
+        } else {
+          alert('Invalid JSON format.');
+        }
+      } catch (err) {
+        alert('Error reading file.');
       }
     };
     reader.readAsText(file);
-  });
+  }
 
-  updateUI();
-</script></body>
+  renderTransactions();
+</script>
+</body>
 </html>
