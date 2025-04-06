@@ -39,7 +39,23 @@
 <body>
 <div class="container py-4 px-3">
   <h3 class="text-center mb-4 fw-bold">Salim & Kashif – Transactions</h3>
-
+<div class="card p-3 mb-4" id="summary-card">
+  <h5 class="mb-3">Summary</h5>
+  <div class="row text-center">
+    <div class="col-6 col-md-3">
+      <strong>Salim Total</strong><br/>
+      ₹<span id="salim-total">0</span>
+    </div>
+    <div class="col-6 col-md-3">
+      <strong>Kashif Total</strong><br/>
+      ₹<span id="kashif-total">0</span>
+    </div>
+    <div class="col-12 col-md-6 mt-3 mt-md-0">
+      <strong>Balance</strong><br/>
+      <span id="balance" class="fw-bold"></span>
+    </div>
+  </div>
+</div>
   <div class="card p-4 mb-4">
     <form id="transaction-form">
       <div class="row g-3">
@@ -86,31 +102,57 @@
   }
 
   function renderTransactions() {
-    const list = document.getElementById('transaction-list');
-    list.innerHTML = '';
+  const list = document.getElementById('transaction-list');
+  list.innerHTML = '';
 
-    const reversed = [...transactions].reverse();
+  // Summary calculation
+  let salimTotal = 0, kashifTotal = 0;
 
-    reversed.forEach((txn, reversedIndex) => {
-      const index = transactions.length - 1 - reversedIndex;
-      const item = document.createElement('li');
-      item.className = 'list-group-item mb-2';
-      item.innerHTML = `
-        <div class="d-flex justify-content-between flex-column flex-md-row align-items-start align-items-md-center">
-          <div>
-            <strong>${txn.person}</strong> - ₹${txn.amount} : ${txn.desc}<br />
-            <small class="text-muted">Date: ${new Date(txn.date).toLocaleString()}</small>
-          </div>
-          <div class="mt-2 mt-md-0">
-            <button class="btn btn-sm btn-outline-secondary me-2" onclick="editTransaction(${index})">Edit</button>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction(${index})">Delete</button>
-          </div>
+  transactions.forEach(txn => {
+    if (txn.person === "Salim") salimTotal += txn.amount;
+    if (txn.person === "Kashif") kashifTotal += txn.amount;
+  });
+
+  document.getElementById('salim-total').textContent = salimTotal.toFixed(2);
+  document.getElementById('kashif-total').textContent = kashifTotal.toFixed(2);
+
+  const balance = (kashifTotal - salimTotal) / 2;
+  const balanceEl = document.getElementById('balance');
+  let balanceText = '';
+if (balance > 0) {
+  balanceText = `Salim owes ₹${balance.toFixed(2)} to Kashif`;
+  balanceEl.style.color = 'green';
+} else if (balance < 0) {
+  balanceText = `Kashif owes ₹${Math.abs(balance).toFixed(2)} to Salim`;
+  balanceEl.style.color = 'red';
+} else {
+  balanceText = 'Expenses are split evenly';
+  balanceEl.style.color = 'black';
+}
+balanceEl.textContent = balanceText;
+
+  // Render reversed list
+  const reversed = [...transactions].reverse();
+  reversed.forEach((txn, reversedIndex) => {
+    const index = transactions.length - 1 - reversedIndex;
+    const item = document.createElement('li');
+    item.className = 'list-group-item mb-2';
+    item.innerHTML = `
+      <div class="d-flex justify-content-between flex-column flex-md-row align-items-start align-items-md-center">
+        <div>
+          <strong>${txn.person}</strong> - ₹${txn.amount} : ${txn.desc}<br />
+          <small class="text-muted">Date: ${new Date(txn.date).toLocaleString()}</small>
         </div>
-        ${txn.history?.length > 0 ? renderHistory(txn.history) : ''}
-      `;
-      list.appendChild(item);
-    });
-  }
+        <div class="mt-2 mt-md-0">
+          <button class="btn btn-sm btn-outline-secondary me-2" onclick="editTransaction(${index})">Edit</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction(${index})">Delete</button>
+        </div>
+      </div>
+      ${txn.history?.length > 0 ? renderHistory(txn.history) : ''}
+    `;
+    list.appendChild(item);
+  });
+}
 
   function renderHistory(history) {
     return `
