@@ -1,253 +1,879 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Salim & Kashif - Tracker</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body {
-      background-color: #f9fafb;
-    }
-    .card {
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-    .history summary {
-      cursor: pointer;
-    }
-    .list-group-item {
-      border-left: 4px solid #6c63ff;
-    }
-    .form-label {
-      font-weight: 500;
-    }
-    .btn {
-      min-width: 90px;
-    }
-    @media (max-width: 576px) {
-      .form-control,
-      .form-select {
-        font-size: 14px;
-      }
-      .list-group-item {
-        font-size: 14px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Expenses</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --danger: #dc3545;
+            --success: #28a745;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+        }
+        
+        .summary {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .summary-total {
+            font-weight: bold;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .owes {
+            color: var(--danger);
+            font-weight: bold;
+        }
+        
+        .gets {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        button.secondary {
+            background-color: #6c757d;
+        }
+        
+        button.danger {
+            background-color: var(--danger);
+        }
+        
+        .transactions {
+            margin-top: 20px;
+        }
+        
+        .transaction {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .transaction-person {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .transaction-amount {
+            font-weight: bold;
+        }
+        
+        .transaction-desc {
+            margin-bottom: 10px;
+        }
+        
+        .transaction-date {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .transaction-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .transaction-actions button {
+            flex: 1;
+            padding: 8px;
+            font-size: 14px;
+        }
+        
+        .history {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+        }
+        
+        .history-item {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #eee;
+        }
+        
+        .history-date {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid var(--primary);
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+            width: auto;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .trash-item {
+            opacity: 0.7;
+            background-color: #f8d7da;
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--primary);
+            display: flex;
+            padding: 10px;
+        }
+        
+        .footer button {
+            flex: 1;
+            margin: 0 5px;
+        }
+        
+        @media (max-width: 480px) {
+            .transaction-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container py-4 px-3">
-  <h3 class="text-center mb-4 fw-bold">Salim & Kashif – Transactions</h3>
-<div class="card p-3 mb-4" id="summary-card">
-  <h5 class="mb-3">Summary</h5>
-  <div class="row text-center">
-    <div class="col-6 col-md-3">
-      <strong>Salim Total</strong><br/>
-      ₹<span id="salim-total">0</span>
+    <header>
+        <div class="container">
+            <h1>Split Expenses</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="transactions">Transactions</div>
+            <div class="tab" data-tab="trash">Trash</div>
+        </div>
+        
+        <div id="transactions-tab" class="tab-content">
+            <div class="summary">
+                <div class="summary-item">
+                    <span id="person1-name">Kashif</span>
+                    <span id="person1-total">₹0</span>
+                </div>
+                <div class="summary-item">
+                    <span id="person2-name">Salim</span>
+                    <span id="person2-total">₹0</span>
+                </div>
+                <div class="summary-item summary-total">
+                    <span>Total</span>
+                    <span id="total-amount">₹0</span>
+                </div>
+                <div class="summary-item">
+                    <span id="settle-direction">Kashif and Salim are even</span>
+                    <span id="settle-amount" class="gets">₹0</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="transaction-person">Person</label>
+                <select id="transaction-person">
+                    <option value="person1">Kashif</option>
+                    <option value="person2">Salim</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="transaction-amount">Amount (₹)</label>
+                <input type="number" id="transaction-amount" placeholder="Enter amount">
+            </div>
+            
+            <div class="form-group">
+                <label for="transaction-desc">Description</label>
+                <textarea id="transaction-desc" rows="2" placeholder="What was this for?"></textarea>
+            </div>
+            
+            <button id="add-transaction">Add Transaction</button>
+            
+            <div class="transactions" id="transactions-list">
+                <!-- Transactions will be added here -->
+            </div>
+        </div>
+        
+        <div id="trash-tab" class="tab-content" style="display: none;">
+            <div class="transactions" id="trash-list">
+                <!-- Trashed transactions will be added here -->
+            </div>
+        </div>
     </div>
-    <div class="col-6 col-md-3">
-      <strong>Kashif Total</strong><br/>
-      ₹<span id="kashif-total">0</span>
+    
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit Transaction</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="edit-person">Person</label>
+                <select id="edit-person">
+                    <option value="person1">Kashif</option>
+                    <option value="person2">Salim</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-amount">Amount (₹)</label>
+                <input type="number" id="edit-amount" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="edit-desc">Description</label>
+                <textarea id="edit-desc" rows="2" placeholder="What was this for?"></textarea>
+            </div>
+            <button id="save-edit">Save Changes</button>
+        </div>
     </div>
-    <div class="col-12 col-md-6 mt-3 mt-md-0">
-      <strong>Balance</strong><br/>
-      <span id="balance" class="fw-bold"></span>
+    
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Settings</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="settings-person1">Person 1 Name</label>
+                <input type="text" id="settings-person1" placeholder="Name">
+            </div>
+            <div class="form-group">
+                <label for="settings-person2">Person 2 Name</label>
+                <input type="text" id="settings-person2" placeholder="Name">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <button id="import-data">Import Data</button>
+                </div>
+                <div class="form-group">
+                    <button id="export-data">Export Data</button>
+                </div>
+            </div>
+            <input type="file" id="file-input" style="display: none;" accept=".json">
+            <button id="save-settings">Save Settings</button>
+        </div>
     </div>
-  </div>
-</div>
-  <div class="card p-4 mb-4">
-    <form id="transaction-form">
-      <div class="row g-3">
-        <div class="col-sm-6 col-md-3">
-          <label class="form-label">Person</label>
-          <select class="form-select" id="name" required>
-            <option value="">Select</option>
-            <option value="Salim">Salim</option>
-            <option value="Kashif">Kashif</option>
-          </select>
-        </div>
-        <div class="col-sm-6 col-md-3">
-          <label class="form-label">Amount</label>
-          <input type="number" class="form-control" id="amount" placeholder="₹" required />
-        </div>
-        <div class="col-sm-12 col-md-4">
-          <label class="form-label">Description</label>
-          <input type="text" class="form-control" id="description" placeholder="Milk, Travel..." required />
-        </div>
-        <input type="hidden" id="edit-index" />
-        <div class="col-sm-12 col-md-2 d-grid align-items-end">
-          <button type="submit" class="btn btn-primary mt-sm-4 mt-md-0">Save</button>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <div class="mb-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
-    <button class="btn btn-success" onclick="exportData()">Export JSON</button>
-    <input type="file" accept=".json" onchange="importData(event)" />
-  </div>
-
-  <div class="card p-3 mb-5">
-    <h5 class="mb-3">Transaction List</h5>
-    <ul class="list-group" id="transaction-list"></ul>
-  </div>
-</div>
-
-<script>
-  let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-
-  function saveTransactions() {
-    localStorage.setItem('transactions', JSON.stringify(transactions));
-  }
-
-  function renderTransactions() {
-  const list = document.getElementById('transaction-list');
-  list.innerHTML = '';
-
-  // Summary calculation
-  let salimTotal = 0, kashifTotal = 0;
-
-  transactions.forEach(txn => {
-    if (txn.person === "Salim") salimTotal += txn.amount;
-    if (txn.person === "Kashif") kashifTotal += txn.amount;
-  });
-
-  document.getElementById('salim-total').textContent = salimTotal.toFixed(2);
-  document.getElementById('kashif-total').textContent = kashifTotal.toFixed(2);
-
-  const balance = (kashifTotal - salimTotal) / 2;
-  const balanceEl = document.getElementById('balance');
-  let balanceText = '';
-if (balance > 0) {
-  balanceText = `Salim owes ₹${balance.toFixed(2)} to Kashif`;
-  balanceEl.style.color = 'green';
-} else if (balance < 0) {
-  balanceText = `Kashif owes ₹${Math.abs(balance).toFixed(2)} to Salim`;
-  balanceEl.style.color = 'red';
-} else {
-  balanceText = 'Expenses are split evenly';
-  balanceEl.style.color = 'black';
-}
-balanceEl.textContent = balanceText;
-
-  // Render reversed list
-  const reversed = [...transactions].reverse();
-  reversed.forEach((txn, reversedIndex) => {
-    const index = transactions.length - 1 - reversedIndex;
-    const item = document.createElement('li');
-    item.className = 'list-group-item mb-2';
-    item.innerHTML = `
-      <div class="d-flex justify-content-between flex-column flex-md-row align-items-start align-items-md-center">
-        <div>
-          <strong>${txn.person}</strong> - ₹${txn.amount} : ${txn.desc}<br />
-          <small class="text-muted">Date: ${new Date(txn.date).toLocaleString()}</small>
-        </div>
-        <div class="mt-2 mt-md-0">
-          <button class="btn btn-sm btn-outline-secondary me-2" onclick="editTransaction(${index})">Edit</button>
-          <button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction(${index})">Delete</button>
-        </div>
-      </div>
-      ${txn.history?.length > 0 ? renderHistory(txn.history) : ''}
-    `;
-    list.appendChild(item);
-  });
-}
-
-  function renderHistory(history) {
-    return `
-      <details class="history mt-2">
-        <summary>View Edit History (${history.length})</summary>
-        <ul class="mt-2 ps-3">
-          ${history.map(h => `
-            <li>
-              ${h.person} - ₹${h.amount} : ${h.desc} 
-              <br><small class="text-muted">Edited: ${new Date(h.date).toLocaleString()}</small>
-            </li>
-          `).join('')}
-        </ul>
-      </details>
-    `;
-  }
-
-  document.getElementById('transaction-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const person = document.getElementById('name').value;
-    const amount = parseFloat(document.getElementById('amount').value);
-    const desc = document.getElementById('description').value;
-    const date = new Date().toISOString();
-    const editIndex = document.getElementById('edit-index').value;
-
-    if (editIndex) {
-      const old = transactions[editIndex];
-      if (!old.history) old.history = [];
-      const { history, ...snapshot } = old;
-      old.history.push(snapshot);
-
-      transactions[editIndex] = {
-        person,
-        amount,
-        desc,
-        date,
-        history: old.history
-      };
-
-      document.getElementById('edit-index').value = '';
-    } else {
-      transactions.push({ person, amount, desc, date, history: [] });
-    }
-
-    saveTransactions();
-    renderTransactions();
-    this.reset();
-  });
-
-  function editTransaction(index) {
-    const txn = transactions[index];
-    document.getElementById('name').value = txn.person;
-    document.getElementById('amount').value = txn.amount;
-    document.getElementById('description').value = txn.desc;
-    document.getElementById('edit-index').value = index;
-  }
-
-  function deleteTransaction(index) {
-    if (confirm("Are you sure you want to delete this transaction?")) {
-      transactions.splice(index, 1);
-      saveTransactions();
-      renderTransactions();
-    }
-  }
-
-  function exportData() {
-    const blob = new Blob([JSON.stringify(transactions, null, 2)], { type: "application/json" });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = "transactions.json";
-    link.click();
-  }
-
-  function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        const data = JSON.parse(e.target.result);
-        if (Array.isArray(data)) {
-          transactions = data;
-          saveTransactions();
-          renderTransactions();
-        } else {
-          alert('Invalid JSON format.');
+    
+    <div class="footer">
+        <button id="show-settings" class="secondary">Settings</button>
+        <button id="clear-all" class="danger">Clear All</button>
+    </div>
+    
+    <script>
+      console.log(22)
+        // App state
+        let transactions = [];
+        let trash = [];
+        let person1Name = "Kashif";
+        let person2Name = "Salim";
+        let editingId = null;
+        
+        // DOM elements
+        const transactionsList = document.getElementById('transactions-list');
+        const trashList = document.getElementById('trash-list');
+        const transactionPerson = document.getElementById('transaction-person');
+        const transactionAmount = document.getElementById('transaction-amount');
+        const transactionDesc = document.getElementById('transaction-desc');
+        const addTransactionBtn = document.getElementById('add-transaction');
+        const editPerson = document.getElementById('edit-person');
+        const editAmount = document.getElementById('edit-amount');
+        const editDesc = document.getElementById('edit-desc');
+        const saveEditBtn = document.getElementById('save-edit');
+        const editModal = document.getElementById('edit-modal');
+        const settingsModal = document.getElementById('settings-modal');
+        const showSettingsBtn = document.getElementById('show-settings');
+        const saveSettingsBtn = document.getElementById('save-settings');
+        const settingsPerson1 = document.getElementById('settings-person1');
+        const settingsPerson2 = document.getElementById('settings-person2');
+        const importDataBtn = document.getElementById('import-data');
+        const exportDataBtn = document.getElementById('export-data');
+        const fileInput = document.getElementById('file-input');
+        const clearAllBtn = document.getElementById('clear-all');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Initialize the app
+        function init() {
+          console.log(1)
+            loadData();
+          console.log(1)
+            renderTransactions();
+          console.log(1)
+            renderTrash();
+          console.log(1)
+            updateSummary();
+          console.log(1)
+            
+            // Event listeners
+            addTransactionBtn.addEventListener('click', addTransaction);
+            saveEditBtn.addEventListener('click', saveEdit);
+            showSettingsBtn.addEventListener('click', () => settingsModal.style.display = 'flex');
+            saveSettingsBtn.addEventListener('click', saveSettings);
+            importDataBtn.addEventListener('click', () => fileInput.click());
+            exportDataBtn.addEventListener('click', exportData);
+            fileInput.addEventListener('change', importData);
+            clearAllBtn.addEventListener('click', clearAll);
+            
+            // Close modals when clicking X
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+            
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    tabContents.forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    document.getElementById(`${tabId}-tab`).style.display = 'block';
+                });
+            });
+        }  
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('splitExpensesData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                transactions = data.transactions || [];
+                trash = data.trash || [];
+                person1Name = data.person1Name || "Kashif";
+                person2Name = data.person2Name || "Salim";
+                
+                // Update UI with loaded names
+                updatePersonNames();
+            }
+        } 
+        
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                transactions,
+                trash,
+                person1Name,
+                person2Name
+            };
+            localStorage.setItem('splitExpensesData', JSON.stringify(data));
+        } 
+        
+        // Update person names in the UI
+        function updatePersonNames() {
+            document.getElementById('person1-name').textContent = person1Name;
+            document.getElementById('person2-name').textContent = person2Name;
+            
+            // Update select options
+            transactionPerson.innerHTML = `
+                <option value="person1">${person1Name}</option>
+                <option value="person2">${person2Name}</option>
+            `;
+            
+            editPerson.innerHTML = `
+                <option value="person1">${person1Name}</option>
+                <option value="person2">${person2Name}</option>
+            `;
+            
+            settingsPerson1.value = person1Name;
+            settingsPerson2.value = person2Name;
+        } 
+        
+        // Add a new transaction
+        function addTransaction() {
+            const person = transactionPerson.value;
+            const amount = parseFloat(transactionAmount.value);
+            const desc = transactionDesc.value.trim();
+            
+           if (!amount || isNaN(amount)) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+           if (!desc) {
+                alert('Please enter a description');
+                return;
+            }
+            
+            const newTransaction = {
+                id: Date.now().toString(),
+                person,
+                amount,
+                desc,
+                date: new Date().toISOString(),
+                history: []
+            };
+            
+            transactions.unshift(newTransaction);
+            saveData();
+            renderTransactions();
+            updateSummary();
+            
+            // Clear form
+            transactionAmount.value = '';
+            transactionDesc.value = '';
+        } 
+        
+    // Render transactions list
+        function renderTransactions() {
+            transactionsList.innerHTML = '';
+            
+            if (transactions.length === 0) {
+                transactionsList.innerHTML = '<p>No transactions yet. Add one above!</p>';
+                return;
+            }
+            
+            transactions.forEach(transaction => {
+                const transactionEl = document.createElement('div');
+                transactionEl.className = 'transaction';
+                transactionEl.innerHTML = `
+                    <div class="transaction-header">
+                        <span class="transaction-person">${transaction.person === 'person1' ? person1Name : person2Name}</span>
+                        <span class="transaction-amount">₹${transaction.amount.toFixed(2)}</span>
+                    </div>
+                    <div class="transaction-desc">${transaction.desc}</div>
+                    <div class="transaction-date">${formatDate(transaction.date)}</div>
+                    <div class="transaction-actions">
+                        <button class="edit-btn secondary" data-id="${transaction.id}">Edit</button>
+                        <button class="trash-btn danger" data-id="${transaction.id}">Trash</button>
+                    </div>
+                    ${transaction.history.length > 0 ? `
+                    <div class="history">
+                        <div>Edit History:</div>
+                        ${transaction.history.map(item => `
+                            <div class="history-item">
+                                <div>${item.person === 'person1' ? person1Name : person2Name} - ₹${item.amount.toFixed(2)} - ${item.desc}</div>
+                                <div class="history-date">${formatDate(item.date)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+                `;
+                
+                transactionsList.appendChild(transactionEl);
+            });
+            
+            // Add event listeners to buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    editTransaction(id);
+                });
+            });
+            
+            document.querySelectorAll('.trash-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    moveToTrash(id);
+                });
+            });
         }
-      } catch (err) {
-        alert('Error reading file.');
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  renderTransactions();
-</script>
+        
+        // Render trash list
+        function renderTrash() {
+            trashList.innerHTML = '';
+            
+            if (trash.length === 0) {
+                trashList.innerHTML = '<p>Trash is empty</p>';
+                return;
+            }
+            
+            trash.forEach(transaction => {
+                const transactionEl = document.createElement('div');
+                transactionEl.className = 'transaction trash-item';
+                transactionEl.innerHTML = `
+                    <div class="transaction-header">
+                        <span class="transaction-person">${transaction.person === 'person1' ? person1Name : person2Name}</span>
+                        <span class="transaction-amount">₹${transaction.amount.toFixed(2)}</span>
+                    </div>
+                    <div class="transaction-desc">${transaction.desc}</div>
+                    <div class="transaction-date">${formatDate(transaction.date)}</div>
+                    <div class="transaction-actions">
+                        <button class="recover-btn" data-id="${transaction.id}">Recover</button>
+                    </div>
+                `;
+                
+                trashList.appendChild(transactionEl);
+            });
+            
+            // Add event listeners to recover buttons
+            document.querySelectorAll('.recover-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    recoverFromTrash(id);
+                });
+            });
+        }
+        
+        // Edit a transaction
+        function editTransaction(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (!transaction) return;
+            
+            editingId = id;
+            editPerson.value = transaction.person;
+            editAmount.value = transaction.amount;
+            editDesc.value = transaction.desc;
+            
+            editModal.style.display = 'flex';
+        }
+        
+        // Save edited transaction
+        function saveEdit() {
+            const transaction = transactions.find(t => t.id === editingId);
+            if (!transaction) return;
+            
+            // Add current state to history before updating
+            transaction.history.unshift({
+                person: transaction.person,
+                amount: transaction.amount,
+                desc: transaction.desc,
+                date: transaction.date
+            });
+            
+            // Update transaction
+            transaction.person = editPerson.value;
+            transaction.amount = parseFloat(editAmount.value);
+            transaction.desc = editDesc.value.trim();
+            transaction.date = new Date().toISOString();
+            
+            saveData();
+            renderTransactions();
+            updateSummary();
+            editModal.style.display = 'none';
+        }
+        
+        // Move transaction to trash
+        function moveToTrash(id) {
+            const index = transactions.findIndex(t => t.id === id);
+            if (index === -1) return;
+            
+            const [transaction] = transactions.splice(index, 1);
+            trash.unshift(transaction);
+            
+            saveData();
+            renderTransactions();
+            renderTrash();
+            updateSummary();
+        } 
+        
+        // Recover transaction from trash
+        function recoverFromTrash(id) {
+            const index = trash.findIndex(t => t.id === id);
+            if (index === -1) return;
+            
+            const [transaction] = trash.splice(index, 1);
+            transactions.unshift(transaction);
+            
+            saveData();
+            renderTransactions();
+            renderTrash();
+            updateSummary();
+        }
+        
+        // Update summary section
+        function updateSummary() {
+            let person1Total = 0;
+            let person2Total = 0;
+            
+            transactions.forEach(transaction => {
+                if (transaction.person === 'person1') {
+                    person1Total += transaction.amount;
+                } else {
+                    person2Total += transaction.amount;
+                }
+            });
+            
+            document.getElementById('person1-total').textContent = `₹${person1Total.toFixed(2)}`;
+            document.getElementById('person2-total').textContent = `₹${person2Total.toFixed(2)}`;
+            
+            const totalAmount = person1Total + person2Total;
+            document.getElementById('total-amount').textContent = `₹${totalAmount.toFixed(2)}`;
+            
+            const difference = Math.abs(person1Total - person2Total);
+            const halfDifference = difference / 2;
+            
+            const settleDirection = document.getElementById('settle-direction');
+            const settleAmount = document.getElementById('settle-amount');
+            
+            if (person1Total > person2Total) {
+                settleDirection.textContent = `${person2Name} owes ${person1Name}`;
+                settleAmount.textContent = `₹${halfDifference.toFixed(2)}`;
+                settleAmount.className = 'gets';
+            } else if (person2Total > person1Total) {
+                settleDirection.textContent = `${person1Name} owes ${person2Name}`;
+                settleAmount.textContent = `₹${halfDifference.toFixed(2)}`;
+                settleAmount.className = 'owes';
+            } else {
+                settleDirection.textContent = `${person1Name} and ${person2Name} are even`;
+                settleAmount.textContent = `₹0.00`;
+                settleAmount.className = '';
+            }
+        }
+        
+        // Save settings
+        function saveSettings() {
+            person1Name = settingsPerson1.value.trim() || "Kashif";
+            person2Name = settingsPerson2.value.trim() || "Salim";
+            
+            updatePersonNames();
+            updateSummary();
+            renderTransactions();
+            renderTrash();
+            saveData();
+            
+            settingsModal.style.display = 'none';
+        }
+        
+        // Export data as JSON
+        function exportData() {
+            const data = {
+                transactions: transactions.map(t => ({
+                    ...t,
+                    history: t.history.map(h => ({...h}))
+                })),
+                trash: trash.map(t => ({
+                    ...t,
+                    history: t.history ? t.history.map(h => ({...h})) : []
+                })),
+                person1Name,
+                person2Name
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `split-expenses-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Import data from JSON file
+        function importData() {
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (confirm('Importing data will replace your current transactions. Continue?')) {
+                        transactions = data.transactions || [];
+                        trash = data.trash || [];
+                        person1Name = data.person1Name || "Kashif";
+                        person2Name = data.person2Name || "Salim";
+                        
+                        updatePersonNames();
+                        renderTransactions();
+                        renderTrash();
+                        updateSummary();
+                        saveData();
+                        
+                        alert('Data imported successfully!');
+                    }
+                } catch (err) {
+                    alert('Error importing data: ' + err.message);
+                }
+                
+                fileInput.value = '';
+            };
+            reader.readAsText(file);
+        }
+        
+        // Clear all transactions (move to trash)
+        function clearAll() {
+            if (transactions.length === 0) {
+                alert('No transactions to clear');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to move all transactions to trash?')) {
+                trash = [...transactions, ...trash];
+                transactions = [];
+                saveData();
+                renderTransactions();
+                renderTrash();
+                updateSummary();
+            }
+        }
+        
+        // Format date for display
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString();
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script> 
 </body>
 </html>
