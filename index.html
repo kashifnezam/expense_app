@@ -3,179 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BPSC AEDO - Bihar Geography Quiz</title>
+    <title>BPSC AEDO 2026 - Bihar Geography Master Quiz</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --success: #27ae60;
-            --error: #e74c3c;
-            --light: #f4f7f6;
+            --primary: #1a5f7a;
+            --secondary: #00af91;
+            --bg: #f0f2f5;
+            --white: #ffffff;
+            --correct: #27ae60;
+            --wrong: #e74c3c;
+            --text: #333;
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light);
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .quiz-container {
-            max-width: 800px;
+
+        header {
             width: 100%;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
+            max-width: 900px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-        h1 { color: var(--primary); text-align: center; margin-bottom: 10px; }
-        .score-board {
+
+        .stats-bar {
             position: sticky;
             top: 10px;
-            background: var(--primary);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
             font-weight: bold;
-            z-index: 100;
+            z-index: 1000;
         }
-        .question-card {
-            margin-bottom: 25px;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
+
+        .quiz-container {
+            width: 100%;
+            max-width: 900px;
         }
+
+        .q-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: 0.3s ease;
+        }
+
+        .category-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            background: #e1f5fe;
+            color: #0288d1;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
         .question-text {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--secondary);
+            margin-bottom: 20px;
+            line-height: 1.4;
         }
-        .options {
+
+        .options-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
         }
-        button {
-            padding: 12px;
-            border: 2px solid #ddd;
-            background: white;
+
+        button.opt {
+            background: var(--white);
+            border: 2px solid #e0e0e0;
+            padding: 15px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.95rem;
             text-align: left;
+            font-size: 1rem;
+            transition: 0.2s;
         }
-        button:hover:not(:disabled) {
-            background: #f0f0f0;
-            border-color: var(--secondary);
+
+        button.opt:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f7fbff;
         }
+
         button.correct {
-            background-color: var(--success) !important;
+            background-color: var(--correct) !important;
             color: white;
-            border-color: var(--success);
+            border-color: var(--correct);
         }
+
         button.wrong {
-            background-color: var(--error) !important;
+            background-color: var(--wrong) !important;
             color: white;
-            border-color: var(--error);
+            border-color: var(--wrong);
         }
-        button:disabled {
-            cursor: not-allowed;
-        }
-        .feedback {
+
+        .progress-container {
+            width: 100%;
+            background: #ddd;
+            height: 10px;
+            border-radius: 5px;
             margin-top: 10px;
-            font-weight: bold;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            width: 0%;
+            border-radius: 5px;
+            transition: 0.5s;
+        }
+
+        .completion-msg {
             display: none;
+            text-align: center;
+            padding: 40px;
+            background: var(--white);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 900px;
         }
     </style>
 </head>
 <body>
 
-    <div class="score-board">
-        Score: <span id="score">0</span> / 50
+    <header>
+        <h1>Bihar Geography: AEDO Special</h1>
+        <p>Target BPSC AEDO 2026 | Comprehensive Geography PYQ</p>
+        <div class="progress-container"><div class="progress-fill" id="progress"></div></div>
+    </header>
+
+    <div class="stats-bar">
+        <span>✅ Correct: <span id="correct-count" style="color: var(--correct)">0</span></span>
+        <span>❌ Wrong: <span id="wrong-count" style="color: var(--wrong)">0</span></span>
+        <span>📊 Progress: <span id="percent">0</span>%</span>
     </div>
 
-    <div class="quiz-container">
-        <h1>Bihar Geography: BPSC AEDO Prep</h1>
-        <p style="text-align: center; color: #666;">Select the correct answer for each question.</p>
-        <div id="quiz-body"></div>
+    <div class="quiz-container" id="quiz-box"></div>
+
+    <div class="completion-msg" id="end-box">
+        <h2>Exam Preparation Complete!</h2>
+        <p>You scored <span id="final-score"></span> out of 50.</p>
+        <button onclick="location.reload()" style="padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;">Retake Test</button>
     </div>
 
     <script>
         const questions = [
-            { q: "Which district is the northernmost point of Bihar?", a: "West Champaran", options: ["East Champaran", "West Champaran", "Sitamarhi", "Kishanganj"] },
-            { q: "What is the total geographical area of Bihar?", a: "94,163 sq. km", options: ["92,163 sq. km", "94,163 sq. km", "96,163 sq. km", "98,163 sq. km"] },
-            { q: "Which district shares a boundary with both Nepal and Uttar Pradesh?", a: "West Champaran", options: ["Gopalganj", "Siwan", "West Champaran", "Rohtas"] },
-            { q: "How many districts of Bihar share a border with Nepal?", a: "7", options: ["6", "7", "8", "9"] },
-            { q: "Which district in Bihar is the westernmost?", a: "Kaimur", options: ["Buxar", "Kaimur", "Rohtas", "Saran"] },
-            { q: "What is the latitudinal extent of Bihar?", a: "24° N to 27° N", options: ["22° N to 25° N", "24° N to 27° N", "20° N to 23° N", "25° N to 28° N"] },
-            { q: "Which district is surrounded by 9 other Bihar districts?", a: "Patna", options: ["Gaya", "Patna", "Muzaffarpur", "Begusarai"] },
-            { q: "What is Bihar's rank in India in terms of area?", a: "12th", options: ["11th", "12th", "13th", "9th"] },
-            { q: "Someshwar Hills are part of which range?", a: "Shiwalik Range", options: ["Shiwalik Range", "Vindhyan Range", "Rajgir Hills", "Kaimur Range"] },
-            { q: "Which district is the southernmost point of Bihar?", a: "Gaya", options: ["Jamui", "Nawada", "Gaya", "Aurangabad"] },
-            // Adding 10 more as a sample for the code block length
-            { q: "Where does the River Ganga enter Bihar?", a: "Chausa (Buxar)", options: ["Munger", "Chausa (Buxar)", "Patna", "Katihar"] },
-            { q: "Which river is the 'Sorrow of Bihar'?", a: "Kosi", options: ["Gandak", "Kamla", "Kosi", "Bagmati"] },
-            { q: "The Son River originates from where?", a: "Amarkantak", options: ["Himalayas", "Amarkantak", "Chota Nagpur", "Rajmahal Hills"] },
-            { q: "The Kakolat Waterfall is in which district?", a: "Nawada", options: ["Rohtas", "Nawada", "Kaimur", "Bhojpur"] },
-            { q: "The Triveni Canal gets water from which river?", a: "Gandak", options: ["Kosi", "Gandak", "Son", "Ganga"] },
-            { q: "Highest annual rainfall occurs in?", a: "Kishanganj", options: ["Purnia", "Kishanganj", "Araria", "Katihar"] },
-            { q: "Which is the hottest district in Bihar?", a: "Gaya", options: ["Gaya", "Patna", "Bhagalpur", "Munger"] },
-            { q: "Only National Park in Bihar is in?", a: "West Champaran", options: ["Munger", "Gaya", "West Champaran", "Nalanda"] },
-            { q: "Which district is the 'Silk City'?", a: "Bhagalpur", options: ["Gaya", "Bhagalpur", "Patna", "Darbhanga"] },
-            { q: "Which district has the highest forest cover %?", a: "Kaimur", options: ["Jamui", "Rohtas", "Kaimur", "West Champaran"] }
+            // I. Physical & Administrative
+            { q: "Which district is the northernmost point of Bihar?", a: "West Champaran", cat: "Admin", opts: ["East Champaran", "West Champaran", "Sitamarhi", "Kishanganj"] },
+            { q: "What is the total area of Bihar?", a: "94,163 sq. km", cat: "Physical", opts: ["92,163 sq. km", "94,163 sq. km", "96,163 sq. km", "98,163 sq. km"] },
+            { q: "Which district shares boundaries with Nepal and Uttar Pradesh?", a: "West Champaran", cat: "Admin", opts: ["Gopalganj", "West Champaran", "Siwan", "Buxar"] },
+            { q: "How many districts share a boundary with Nepal?", a: "7", cat: "Admin", opts: ["6", "7", "8", "9"] },
+            { q: "Which district is the westernmost in Bihar?", a: "Kaimur", cat: "Admin", opts: ["Buxar", "Rohtas", "Kaimur", "Saran"] },
+            { q: "Bihar rank in India by area (post-Telangana)?", a: "12th", cat: "Admin", opts: ["11th", "12th", "13th", "14th"] },
+            { q: "Number of districts sharing boundary with Patna?", a: "9", cat: "Admin", opts: ["7", "8", "9", "10"] },
+            { q: "Which district is the easternmost?", a: "Kishanganj", cat: "Admin", opts: ["Purnia", "Kishanganj", "Katihar", "Bhagalpur"] },
+            { q: "Latitudinal range of Bihar?", a: "24°20' N to 27°31' N", cat: "Physical", opts: ["22°10' N to 25°20' N", "24°20' N to 27°31' N", "26°00' N to 29°00' N", "23°20' N to 26°30' N"] },
+            { q: "Which is the southernmost district of Bihar?", a: "Gaya", cat: "Admin", opts: ["Jamui", "Nawada", "Gaya", "Aurangabad"] },
+
+            // II. Rivers & Water
+            { q: "Where does Ganga enter Bihar?", a: "Chausa (Buxar)", cat: "Rivers", opts: ["Munger", "Patna", "Chausa (Buxar)", "Katihar"] },
+            { q: "Which river is 'Sorrow of Bihar'?", a: "Kosi", cat: "Rivers", opts: ["Kamla", "Gandak", "Kosi", "Bagmati"] },
+            { q: "Origin of Son River?", a: "Amarkantak", cat: "Rivers", opts: ["Himalayas", "Amarkantak", "Chota Nagpur", "Maikal Range"] },
+            { q: "River joining Ganga at Sonepur?", a: "Gandak", cat: "Rivers", opts: ["Ghaghra", "Gandak", "Son", "Punpun"] },
+            { q: "Kakolat Waterfall location?", a: "Nawada", cat: "Rivers", opts: ["Gaya", "Nawada", "Rohtas", "Kaimur"] },
+            { q: "Triveni Canal source river?", a: "Gandak", cat: "Rivers", opts: ["Kosi", "Gandak", "Son", "Ganga"] },
+            { q: "River joining Ganga at Kursela?", a: "Kosi", cat: "Rivers", opts: ["Mahananda", "Kosi", "Kamla", "Gandak"] },
+            { q: "Which river is called 'Unholy'?", a: "Karmanasa", cat: "Rivers", opts: ["Punpun", "Phalgu", "Karmanasa", "Saryu"] },
+            { q: "Telhar Kund waterfall district?", a: "Kaimur", cat: "Rivers", opts: ["Rohtas", "Kaimur", "Nawada", "Gaya"] },
+            { q: "Length of Ganga in Bihar?", a: "445 km", cat: "Rivers", opts: ["425 km", "445 km", "475 km", "500 km"] },
+
+            // III. Soil & Geology
+            { q: "Dominant soil type in Bihar?", a: "Alluvial Soil", cat: "Soil", opts: ["Red Soil", "Alluvial Soil", "Laterite Soil", "Black Soil"] },
+            { q: "Old Alluvial soil name?", a: "Bangar", cat: "Soil", opts: ["Khadar", "Bangar", "Tal", "Balsundari"] },
+            { q: "Vindhyan Rock system location?", a: "Rohtas & Kaimur", cat: "Geology", opts: ["Munger", "Rohtas & Kaimur", "West Champaran", "Bhagalpur"] },
+            { q: "Dharwad rocks are found in?", a: "South-East Bihar", cat: "Geology", opts: ["North Bihar", "West Bihar", "South-East Bihar", "Central Bihar"] },
+            { q: "Tertiary rocks are found in?", a: "West Champaran", cat: "Geology", opts: ["Gaya", "Munger", "Rohtas", "West Champaran"] },
+            { q: "New Alluvial soil name?", a: "Khadar", cat: "Soil", opts: ["Bangar", "Khadar", "Terai", "Balmat"] },
+            { q: "Kaimur Plateau is famous for?", a: "Limestone", cat: "Resources", opts: ["Mica", "Gold", "Limestone", "Coal"] },
+            { q: "Mineral found in Nawada?", a: "Mica", cat: "Resources", opts: ["Iron", "Mica", "Copper", "Petroleum"] },
+            { q: "Balsundari soil is found in?", a: "Saharsa/Purnia", cat: "Soil", opts: ["Gaya/Patna", "Saharsa/Purnia", "Rohtas/Kaimur", "Buxar"] },
+            { q: "Tal soil location?", a: "South Ganga bank", cat: "Soil", opts: ["Nepal border", "South Ganga bank", "Plateau region", "Terai"] },
+
+            // IV. Climate & Forest
+            { q: "Highest rainfall district?", a: "Kishanganj", cat: "Climate", opts: ["Purnia", "Araria", "Kishanganj", "West Champaran"] },
+            { q: "Hottest district?", a: "Gaya", cat: "Climate", opts: ["Patna", "Munger", "Gaya", "Bhagalpur"] },
+            { q: "Valmiki National Park district?", a: "West Champaran", cat: "WildLife", opts: ["East Champaran", "West Champaran", "Kaimur", "Munger"] },
+            { q: "Highest forest cover percentage?", a: "Kaimur", cat: "Forest", opts: ["Jamui", "Rohtas", "Kaimur", "West Champaran"] },
+            { q: "Lowest forest area district?", a: "Sheikhpura", cat: "Forest", opts: ["Sheohar", "Sheikhpura", "Arwal", "Jehanabad"] },
+            { q: "Kanwar Lake district?", a: "Begusarai", cat: "WildLife", opts: ["Patna", "Begusarai", "Darbhanga", "Katihar"] },
+            { q: "Bhimbandh Sanctuary location?", a: "Munger", cat: "WildLife", opts: ["Gaya", "Munger", "Nalanda", "Jamui"] },
+            { q: "Bihar forest cover % (ISFR 2021)?", a: "7.84%", cat: "Forest", opts: ["6.5%", "7.84%", "9.1%", "10.3%"] },
+            { q: "Gautam Buddha Sanctuary district?", a: "Gaya", cat: "WildLife", opts: ["Patna", "Nalanda", "Gaya", "Nawada"] },
+            { q: "Bihar climate type?", a: "Monsoon", cat: "Climate", opts: ["Tropical", "Monsoon", "Equatorial", "Desert"] },
+
+            // V. Economy & Agriculture
+            { q: "Leading Jute producer?", a: "Purnia", cat: "Agri", opts: ["Katihar", "Purnia", "Araria", "Kishanganj"] },
+            { q: "Shahi Litchi GI Tag district?", a: "Muzaffarpur", cat: "Agri", opts: ["Vaishali", "Muzaffarpur", "Patna", "Saran"] },
+            { q: "Barauni refinery helper country?", a: "USSR", cat: "Industry", opts: ["USA", "Germany", "USSR", "UK"] },
+            { q: "Silk City of Bihar?", a: "Bhagalpur", cat: "Industry", opts: ["Gaya", "Bhagalpur", "Nalanda", "Patna"] },
+            { q: "PPCL (Pyrites) location?", a: "Amjhore (Rohtas)", cat: "Industry", opts: ["Amjhore (Rohtas)", "Barauni", "Dalmiangar", "Hajipur"] },
+            { q: "Highest population density (2011)?", a: "Sheohar", cat: "Census", opts: ["Patna", "Sheohar", "Darbhanga", "Vaishali"] },
+            { q: "Leading Rice producer district?", a: "Rohtas", cat: "Agri", opts: ["Rohtas", "Bhojpur", "Patna", "Aurangabad"] },
+            { q: "Mahatma Gandhi Setu connects Patna to?", a: "Hajipur", cat: "Admin", opts: ["Hajipur", "Sonepur", "Chapra", "Arrah"] },
+            { q: "Highest female literacy district?", a: "Rohtas", cat: "Census", opts: ["Patna", "Munger", "Rohtas", "Gaya"] },
+            { q: "Makhana production hub?", a: "Madhubani", cat: "Agri", opts: ["Patna", "Madhubani", "Gaya", "Bhojpur"] }
         ];
 
-        let currentScore = 0;
-        const quizBody = document.getElementById('quiz-body');
-        const scoreDisplay = document.getElementById('score');
+        let correctCount = 0;
+        let wrongCount = 0;
+        let attempted = 0;
 
-        function loadQuiz() {
-            questions.forEach((item, index) => {
+        function init() {
+            const container = document.getElementById('quiz-box');
+            questions.forEach((q, i) => {
                 const card = document.createElement('div');
-                card.className = 'question-card';
-                
-                const qText = document.createElement('div');
-                qText.className = 'question-text';
-                qText.innerText = `${index + 1}. ${item.q}`;
-                card.appendChild(qText);
-
-                const optionsDiv = document.createElement('div');
-                optionsDiv.className = 'options';
-
-                item.options.forEach(opt => {
-                    const btn = document.createElement('button');
-                    btn.innerText = opt;
-                    btn.onclick = () => checkAnswer(btn, opt, item.a, optionsDiv);
-                    optionsDiv.appendChild(btn);
-                });
-
-                card.appendChild(optionsDiv);
-                quizBody.appendChild(card);
+                card.className = 'q-card';
+                card.innerHTML = `
+                    <span class="category-tag">${q.cat}</span>
+                    <div class="question-text">${i+1}. ${q.q}</div>
+                    <div class="options-grid" id="opts-${i}">
+                        ${q.opts.map(o => `<button class="opt" onclick="check(${i}, '${o}', this)">${o}</button>`).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
             });
         }
 
-        function checkAnswer(selectedBtn, selectedOpt, correctOpt, parentDiv) {
-            const buttons = parentDiv.querySelectorAll('button');
-            buttons.forEach(b => b.disabled = true); // Disable all buttons after choice
+        function check(index, selected, btn) {
+            const correct = questions[index].a;
+            const parent = document.getElementById(`opts-${index}`);
+            const buttons = parent.querySelectorAll('button');
+            
+            attempted++;
+            buttons.forEach(b => b.disabled = true);
 
-            if (selectedOpt === correctOpt) {
-                selectedBtn.classList.add('correct');
-                currentScore++;
-                scoreDisplay.innerText = currentScore;
+            if (selected === correct) {
+                btn.classList.add('correct');
+                correctCount++;
+                document.getElementById('correct-count').innerText = correctCount;
             } else {
-                selectedBtn.classList.add('wrong');
-                // Highlight the correct one
-                buttons.forEach(b => {
-                    if (b.innerText === correctOpt) b.classList.add('correct');
-                });
+                btn.classList.add('wrong');
+                wrongCount++;
+                document.getElementById('wrong-count').innerText = wrongCount;
+                buttons.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+            }
+
+            // Update Progress
+            const progress = (attempted / 50) * 100;
+            document.getElementById('progress').style.width = progress + "%";
+            document.getElementById('percent').innerText = Math.round(progress);
+
+            if(attempted === 50) {
+                window.scrollTo(0, 0);
+                document.getElementById('quiz-box').style.display = 'none';
+                document.getElementById('end-box').style.display = 'block';
+                document.getElementById('final-score').innerText = correctCount;
             }
         }
 
-        loadQuiz();
+        init();
     </script>
 </body>
 </html>
