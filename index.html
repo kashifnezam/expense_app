@@ -3,125 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BPSC AEDO Master Prep - 150 Qs</title>
+    <title>BPSC Geography: 150 Qs Portal</title>
     <style>
-        :root {
-            --primary: #004d40;
-            --accent: #00bfa5;
-            --bg: #eceff1;
-            --card: #ffffff;
-            --correct: #2e7d32;
-            --wrong: #c62828;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; padding-bottom: 80px; }
-        .header { background: var(--primary); color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
-        .topic-summary { background: #fffde7; padding: 15px; border-left: 5px solid #fbc02d; margin-bottom: 20px; border-radius: 5px; font-size: 0.95rem; line-height: 1.5; }
-        .stats { position: fixed; bottom: 0; left: 0; right: 0; background: var(--primary); color: white; display: flex; justify-content: space-around; padding: 15px; font-weight: bold; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
-        .q-card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .year-tag { font-size: 0.7rem; background: #e0f2f1; color: #00695c; padding: 3px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 8px; display: inline-block; }
-        .question { font-weight: 600; margin-bottom: 15px; color: #37474f; }
-        .options { display: flex; flex-direction: column; gap: 10px; }
-        .opt-btn { background: #f5f5f5; border: 1.5px solid #eee; padding: 12px; border-radius: 8px; text-align: left; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
-        .opt-btn:active { transform: scale(0.98); }
+        :root { --primary: #004d40; --secondary: #00796b; --bg: #f4f7f6; --correct: #2e7d32; --wrong: #c62828; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
+        .nav { background: var(--primary); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 1000; }
+        .topic-sec { background: #fffde7; padding: 15px; margin: 10px; border-left: 5px solid #fbc02d; border-radius: 4px; }
+        .q-card { background: white; margin: 12px; padding: 18px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .year-tag { font-size: 0.75rem; color: #555; background: #e0f2f1; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
+        .opts { display: grid; gap: 10px; margin-top: 15px; }
+        button { padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; background: #fff; text-align: left; cursor: pointer; font-size: 0.95rem; }
         .correct { background: var(--correct) !important; color: white; border-color: var(--correct); }
         .wrong { background: var(--wrong) !important; color: white; border-color: var(--wrong); }
-        h2 { border-bottom: 2px solid var(--primary); padding-bottom: 5px; color: var(--primary); margin-top: 30px; }
+        .stats { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 2px solid #ddd; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>BPSC AEDO Geography</h1>
-    <p>100 PYQs + 50 Mock Questions</p>
+<div class="nav">
+    <h2 style="margin:0">BPSC Geography Master Portal</h2>
+    <div style="font-size:0.85rem">100 PYQs + 50 AEDO Mock Questions</div>
 </div>
+
+<div id="quiz-container"></div>
 
 <div class="stats">
-    <span>Score: <span id="score">0</span></span>
-    <span>Attempted: <span id="total">0</span>/150</span>
+    <span>✅ Correct: <span id="c-count">0</span></span>
+    <span>❌ Wrong: <span id="w-count">0</span></span>
+    <span>Score: <span id="score-pct">0</span>%</span>
 </div>
-
-<h2>Topic 1: Physical Geography (PYQ)</h2>
-<div class="topic-summary">
-    <strong>Summary:</strong> BPSC focuses heavily on Bihar's geological structure. Northern Bihar is dominated by Terai/Someshwar hills (Tertiary), while Southern Bihar features Dharwad (oldest) and Vindhyan (Rohtas/Kaimur) systems. Bihar is strictly a "Landlocked State".
-</div>
-<div id="physical-pyqs"></div>
-
-<h2>Topic 2: River Systems (PYQ)</h2>
-<div class="topic-summary">
-    <strong>Summary:</strong> Ganga flows 445km in Bihar, entering at Chausa. Kosi (Sorrow of Bihar) and Gandak are key Himalayan rivers. Son and Punpun are key plateau rivers. Oxbow lakes (Kanwar Lake) are vital for Bihar's ecosystem.
-</div>
-<div id="river-pyqs"></div>
-
-<h2>Topic 3: AEDO Special (Expected)</h2>
-<div class="topic-summary">
-    <strong>Summary:</strong> For Assistant Education Development Officer (AEDO), expect questions on Bihar's educational infrastructure location, environmental impacts on schools, and disaster management (floods/droughts) geography.
-</div>
-<div id="aedo-mocks"></div>
 
 <script>
-const pyqs = [
-    // Physical (Sample of 100 - limited here for space, but logic follows for all 100)
-    { q: "Which district of Bihar does not have Dharwad geological structure?", a: "Rohtas", y: "65th BPSC", opts: ["Munger", "Rohtas", "Jamui", "Nawada"] },
-    { q: "The area of Bihar is what percentage of India's total area?", a: "2.86%", y: "45th BPSC", opts: ["2.86%", "3.12%", "2.54%", "2.40%"] },
-    { q: "Which hill range is part of the Shiwalik system in Bihar?", a: "Someshwar Hills", y: "64th BPSC", opts: ["Rajgir Hills", "Kaimur Plateau", "Someshwar Hills", "Kharagpur Hills"] },
-    { q: "The average height of Bihar above sea level is?", a: "53 meters", y: "53-55th BPSC", opts: ["50 meters", "53 meters", "58 meters", "62 meters"] },
-    // Rivers
-    { q: "At which place does the River Ganga leave Bihar?", a: "Katihar", y: "60-62nd BPSC", opts: ["Patna", "Bhagalpur", "Katihar", "Munger"] },
-    { q: "Which river is notorious for frequent course changes?", a: "Kosi", y: "48th BPSC", opts: ["Ganga", "Kosi", "Gandak", "Son"] },
-    { q: "Kanwar Lake is located in which district?", a: "Begusarai", y: "67th BPSC", opts: ["Begusarai", "Khagaria", "Darbhanga", "Saharsa"] },
-    // AEDO Special Mocks
-    { q: "Which district in Bihar has the highest literacy rate as per 2011 Census?", a: "Rohtas", y: "AEDO Mock", opts: ["Patna", "Rohtas", "Munger", "Gaya"] },
-    { q: "The 'Vikramshila Gangetic Dolphin Sanctuary' is in which district?", a: "Bhagalpur", y: "AEDO Mock", opts: ["Bhagalpur", "Patna", "Munger", "Vaishali"] },
-    { q: "Which region of Bihar is most prone to seismic activity (Zone V)?", a: "Northern Districts", y: "AEDO Mock", opts: ["Southern Districts", "Western Districts", "Northern Districts", "Central Districts"] }
+const quizData = [
+    { title: "Topic 1: Physical Geography & Borders (PYQs)", summary: "Bihar is a landlocked state with a rectangular shape. It occupies 2.86% of India's area and ranks 12th. The northern border with Nepal is 726 km long.", 
+      qs: [
+        { q: "What is the total geographical area of Bihar?", a: "94,163 sq. km", y: "45th BPSC", o: ["92,163 sq. km", "94,163 sq. km", "96,163 sq. km", "98,163 sq. km"] },
+        { q: "Bihar is located between which latitudes?", a: "24°20' N to 27°31' N", y: "39th BPSC", o: ["24°20' N to 27°31' N", "21°10' N to 24°30' N", "25° N to 28° N", "20° N to 23° N"] },
+        { q: "Which district of Bihar does not share a border with any other state?", a: "Patna", y: "BPSC Pre", o: ["Siwan", "Gaya", "Patna", "Purnia"] },
+        { q: "How many districts of Bihar share a border with Nepal?", a: "7", y: "66th BPSC", o: ["6", "7", "8", "9"] },
+        { q: "Which district of Bihar is the northernmost?", a: "West Champaran", y: "PYQ", o: ["Kishanganj", "West Champaran", "Sitamarhi", "Araria"] },
+        { q: "The highest peak of Bihar, Someshwar Fort, is located in?", a: "West Champaran", y: "64th BPSC", o: ["Nalanda", "Gaya", "Rohtas", "West Champaran"] },
+        { q: "What is the distance of Bihar from North to South?", a: "345 km", y: "PYQ", o: ["483 km", "345 km", "512 km", "400 km"] },
+        { q: "What is the distance of Bihar from East to West?", a: "483 km", y: "PYQ", o: ["483 km", "345 km", "450 km", "500 km"] },
+        { q: "Which state borders Bihar to the South?", a: "Jharkhand", y: "PYQ", o: ["Odisha", "Jharkhand", "Chhattisgarh", "West Bengal"] },
+        { q: "Bihar rank in India in terms of population (2011)?", a: "3rd", y: "66th BPSC", o: ["1st", "2nd", "3rd", "4th"] },
+        { q: "Through which district does the River Ganga enter Bihar?", a: "Buxar", y: "62nd BPSC", o: ["Buxar", "Munger", "Patna", "Katihar"] },
+        { q: "The average height of Bihar from sea level is?", a: "53 meters", y: "55th BPSC", o: ["40 meters", "53 meters", "60 meters", "70 meters"] },
+        { q: "Which district has the largest area in Bihar?", a: "West Champaran", y: "PYQ", o: ["Gaya", "Patna", "West Champaran", "Rohtas"] },
+        { q: "Which district has the smallest area in Bihar?", a: "Sheohar", y: "PYQ", o: ["Sheikhpura", "Sheohar", "Lakhisarai", "Arwal"] },
+        { q: "The state flower of Bihar is?", a: "Marigold", y: "PYQ", o: ["Lotus", "Rose", "Marigold", "Kachnar"] },
+        { q: "What is the shape of Bihar state?", a: "Rectangular", y: "PYQ", o: ["Square", "Triangular", "Rectangular", "Irregular"] },
+        { q: "Number of Administrative Divisions (Pramandal) in Bihar?", a: "9", y: "PYQ", o: ["7", "8", "9", "11"] },
+        { q: "Which district share boundary with West Bengal and Nepal both?", a: "Kishanganj", y: "PYQ", o: ["Katihar", "Kishanganj", "Araria", "Purnia"] },
+        { q: "The Vindhyan rock system is found in which part of Bihar?", a: "South-West", y: "65th BPSC", o: ["North-West", "South-West", "South-East", "North-East"] },
+        { q: "Which geological structure is the oldest in Bihar?", a: "Dharwad Rocks", y: "65th BPSC", o: ["Dharwad Rocks", "Vindhyan Rocks", "Tertiary Rocks", "Quaternary Rocks"] },
+        { q: "Terai region in Bihar is found along the border of?", a: "Nepal", y: "PYQ", o: ["Uttar Pradesh", "Jharkhand", "Nepal", "West Bengal"] },
+        { q: "Which district is known as 'Silk City'?", a: "Bhagalpur", y: "PYQ", o: ["Gaya", "Patna", "Bhagalpur", "Darbhanga"] },
+        { q: "The 'Dalmiangar' in Bihar is famous for?", a: "Cement", y: "PYQ", o: ["Silk", "Cement", "Leather", "Sugar"] },
+        { q: "Where is the only National Park of Bihar situated?", a: "West Champaran", y: "67th BPSC", o: ["Gaya", "Kaimur", "West Champaran", "Munger"] },
+        { q: "The 'Vikramshila Gangetic Dolphin Sanctuary' is in?", a: "Bhagalpur", y: "PYQ", o: ["Patna", "Munger", "Bhagalpur", "Katihar"] }
+      ]
+    },
+    { title: "Topic 2: Rivers & Drainage Systems (PYQs)", summary: "Ganga divides Bihar into two halves. North Bihar rivers are perennial (fed by Himalayas) while South Bihar rivers are seasonal (fed by Plateaus).", 
+      qs: [
+        { q: "Which river is called the 'Sorrow of Bihar'?", a: "Kosi", y: "48th BPSC", o: ["Gandak", "Bagmati", "Kosi", "Kamla"] },
+        { q: "At which point does the Son river join the Ganga?", a: "Danapur", y: "59th BPSC", o: ["Danapur", "Fatwah", "Hajipur", "Munger"] },
+        { q: "The River Ganga leaves Bihar at which district?", a: "Katihar", y: "62nd BPSC", o: ["Bhagalpur", "Katihar", "Munger", "Purnia"] },
+        { q: "Which river joins Ganga at Sonepur?", a: "Gandak", y: "PYQ", o: ["Son", "Gandak", "Ghaghra", "Punpun"] },
+        { q: "The origin of Son River is?", a: "Amarkantak", y: "PYQ", o: ["Himalayas", "Amarkantak", "Chota Nagpur", "Maikal Range"] },
+        { q: "Which river flows through the historical city of Gaya?", a: "Phalgu", y: "PYQ", o: ["Son", "Phalgu", "Punpun", "Kiul"] },
+        { q: "Triveni Canal receives water from which river?", a: "Gandak", y: "PYQ", o: ["Son", "Kosi", "Gandak", "Kamla"] },
+        { q: "Which river is notorious for changing its course frequently?", a: "Kosi", y: "PYQ", o: ["Gandak", "Kosi", "Mahananda", "Bagmati"] },
+        { q: "Where is Kakolat Waterfall situated?", a: "Nawada", y: "PYQ", o: ["Nawada", "Gaya", "Rohtas", "Kaimur"] },
+        { q: "Which is the longest river in Bihar?", a: "Ganga", y: "PYQ", o: ["Kosi", "Ganga", "Gandak", "Son"] },
+        { q: "River Karmanasa joins Ganga near?", a: "Chausa", y: "PYQ", o: ["Chausa", "Munger", "Patna", "Fatwah"] },
+        { q: "Kanwar Lake, an oxbow lake, is in which district?", a: "Begusarai", y: "67th BPSC", o: ["Khagaria", "Begusarai", "Darbhanga", "Saharsa"] },
+        { q: "The Punpun river joins Ganga at?", a: "Fatwah", y: "PYQ", o: ["Fatwah", "Danapur", "Hajipur", "Munger"] },
+        { q: "Which river basin is the largest in Bihar?", a: "Ganga Basin", y: "PYQ", o: ["Kosi Basin", "Ganga Basin", "Son Basin", "Gandak Basin"] },
+        { q: "The 'Barh' (Flood) problem in North Bihar is mainly caused by?", a: "Kosi", y: "PYQ", o: ["Son", "Gandak", "Kosi", "Punpun"] },
+        { q: "Which river forms the western boundary of Bihar with UP?", a: "Karmanasa", y: "PYQ", o: ["Son", "Karmanasa", "Gandak", "Ghaghra"] },
+        { q: "Telhar Kund waterfall is in which district?", a: "Kaimur", y: "PYQ", o: ["Rohtas", "Kaimur", "Nawada", "Gaya"] },
+        { q: "The Mahatma Gandhi Setu connects Patna to?", a: "Hajipur", y: "PYQ", o: ["Sonepur", "Hajipur", "Arrah", "Chapra"] },
+        { q: "Karkat Waterfall is located in?", a: "Kaimur", y: "PYQ", o: ["Kaimur", "Rohtas", "Nawada", "Jamui"] },
+        { q: "Length of Ganga within Bihar is approximately?", a: "445 km", y: "PYQ", o: ["425 km", "445 km", "500 km", "550 km"] },
+        { q: "The river Mahananda joins Ganga at?", a: "Katihar", y: "PYQ", o: ["Purnia", "Katihar", "Malda", "Bhagalpur"] },
+        { q: "Kamla River originates from?", a: "Mahabharat Range", y: "PYQ", o: ["Amarkantak", "Mahabharat Range", "Chota Nagpur", "Shiwalik"] },
+        { q: "Bagmati river enters Bihar in which district?", a: "Sitamarhi", y: "PYQ", o: ["Madhubani", "Sitamarhi", "Araria", "Supaul"] },
+        { q: "The 'Sapt Kosi' system is related to which river?", a: "Kosi", y: "PYQ", o: ["Gandak", "Kosi", "Kamla", "Mahananda"] },
+        { q: "Which river is also known as Niranjana?", a: "Phalgu", y: "PYQ", o: ["Son", "Phalgu", "Punpun", "Kiul"] }
+      ]
+    },
+    { title: "Topic 3: Climate, Soil & Agriculture (PYQs)", summary: "Bihar has a Humid Subtropical climate. Soils range from Terai in the North to Alluvial in the plains and Red-Yellow in the plateau. Purnia is key for Jute.", 
+      qs: [
+        { q: "What type of climate is found in Bihar?", a: "Monsoon", y: "PYQ", o: ["Tropical", "Equatorial", "Monsoon", "Desert"] },
+        { q: "Which district in Bihar receives the highest rainfall?", a: "Kishanganj", y: "67th BPSC", o: ["Purnia", "Araria", "Kishanganj", "West Champaran"] },
+        { q: "Which is the hottest district in Bihar?", a: "Gaya", y: "PYQ", o: ["Patna", "Gaya", "Bhagalpur", "Munger"] },
+        { q: "The 'Hathiya' rain in Bihar occurs during?", a: "Retreating Monsoon", y: "PYQ", o: ["Summer", "Retreating Monsoon", "Winter", "Advancing Monsoon"] },
+        { q: "Old Alluvial soil in Bihar is known as?", a: "Bangar", y: "PYQ", o: ["Khadar", "Bangar", "Balsundari", "Tal"] },
+        { q: "New Alluvial soil in Bihar is known as?", a: "Khadar", y: "PYQ", o: ["Khadar", "Bangar", "Terai", "Balmat"] },
+        { q: "Which district is leading in Jute production in Bihar?", a: "Purnia", y: "63rd BPSC", o: ["Katihar", "Purnia", "Araria", "Kishanganj"] },
+        { q: "Balsundari soil is primarily found in?", a: "Saharsa/Purnia", y: "PYQ", o: ["Gaya/Patna", "Saharsa/Purnia", "Rohtas/Kaimur", "Buxar"] },
+        { q: "Which district is famous for Shahi Litchi?", a: "Muzaffarpur", y: "PYQ", o: ["Vaishali", "Muzaffarpur", "Patna", "Saran"] },
+        { q: "The 'Rice Bowl' of Bihar is?", a: "Rohtas", y: "PYQ", o: ["Bhojpur", "Rohtas", "Patna", "Aurangabad"] },
+        { q: "Makhana production is highest in?", a: "Madhubani", y: "PYQ", o: ["Darbhanga", "Madhubani", "Patna", "Gaya"] },
+        { q: "Tea cultivation is done in which district?", a: "Kishanganj", y: "PYQ", o: ["Purnia", "Kishanganj", "Araria", "Katihar"] },
+        { q: "Which district has the highest forest cover %?", a: "Kaimur", y: "PYQ", o: ["Jamui", "Rohtas", "Kaimur", "West Champaran"] },
+        { q: "Total forest cover in Bihar is approximately?", a: "7.84%", y: "PYQ", o: ["6.5%", "7.84%", "9.2%", "10.5%"] },
+        { q: "Which district has the lowest forest cover?", a: "Sheikhpura", y: "PYQ", o: ["Sheohar", "Sheikhpura", "Arwal", "Jehanabad"] },
+        { q: "Sugar industry in Bihar is concentrated in?", a: "North-West Bihar", y: "PYQ", o: ["South Bihar", "North-West Bihar", "East Bihar", "Central Bihar"] },
+        { q: "Which soil has the highest lime content?", a: "Terai Soil", y: "PYQ", o: ["Alluvial", "Terai Soil", "Red Soil", "Tal Soil"] },
+        { q: "Paddy is the most important crop of Bihar, followed by?", a: "Maize", y: "PYQ", o: ["Wheat", "Maize", "Jute", "Sugarcane"] },
+        { q: "Average annual rainfall of Bihar is?", a: "112-125 cm", y: "PYQ", o: ["80 cm", "100 cm", "112-125 cm", "150 cm"] },
+        { q: "Where is the Barauni Oil Refinery located?", a: "Begusarai", y: "PYQ", o: ["Begusarai", "Patna", "Munger", "Bhagalpur"] },
+        { q: "Pyrite is exclusively found in which district of Bihar?", a: "Rohtas", y: "PYQ", o: ["Gaya", "Jamui", "Rohtas", "Munger"] },
+        { q: "Gold reserves have been found recently in which district?", a: "Jamui", y: "PYQ", o: ["Jamui", "Munger", "Rohtas", "Banka"] },
+        { q: "Uranium is found in which district of Bihar?", a: "Gaya", y: "PYQ", o: ["Gaya", "Nawada", "Jamui", "Rohtas"] },
+        { q: "Which mineral is Nawada famous for?", a: "Mica", y: "PYQ", o: ["Iron", "Mica", "Coal", "Bauxite"] },
+        { q: "The climate of Bihar is influenced mainly by?", a: "Himalayas", y: "PYQ", o: ["Aravallis", "Himalayas", "Western Ghats", "Desert"] }
+      ]
+    },
+    { title: "Topic 4: Census & Demographic Geography (PYQs)", summary: "Bihar has the highest population density in India (1106). Literacy is 61.8%. Rohtas leads in literacy.", 
+      qs: [
+        { q: "What is the population density of Bihar (2011)?", a: "1106", y: "66th BPSC", o: ["980", "1106", "1020", "1210"] },
+        { q: "Which district has the highest population density?", a: "Sheohar", y: "PYQ", o: ["Patna", "Sheohar", "Darbhanga", "Vaishali"] },
+        { q: "Which district has the lowest population density?", a: "Kaimur", y: "PYQ", o: ["Jamui", "Kaimur", "Banka", "Rohtas"] },
+        { q: "Overall Literacy rate of Bihar (2011)?", a: "61.8%", y: "PYQ", o: ["51.5%", "61.8%", "71.2%", "65.5%"] },
+        { q: "Which district has the highest literacy rate?", a: "Rohtas", y: "PYQ", o: ["Patna", "Rohtas", "Munger", "Gaya"] },
+        { q: "Which district has the lowest literacy rate?", a: "Purnia", y: "PYQ", o: ["Purnia", "Saharasa", "Katihar", "Araria"] },
+        { q: "Female literacy rate in Bihar?", a: "51.5%", y: "PYQ", o: ["45.5%", "51.5%", "55.5%", "60.0%"] },
+        { q: "District with highest female literacy?", a: "Rohtas", y: "PYQ", o: ["Patna", "Rohtas", "Munger", "Siwan"] },
+        { q: "Sex ratio of Bihar (2011)?", a: "918", y: "PYQ", o: ["918", "933", "940", "910"] },
+        { q: "District with highest sex ratio?", a: "Gopalganj", y: "PYQ", o: ["Siwan", "Gopalganj", "Saran", "Kishanganj"] },
+        { q: "District with lowest sex ratio?", a: "Munger", y: "PYQ", o: ["Patna", "Munger", "Bhagalpur", "Khagaria"] },
+        { q: "Child sex ratio in Bihar?", a: "935", y: "PYQ", o: ["918", "935", "944", "927"] },
+        { q: "Decadal population growth rate (2001-2011)?", a: "25.4%", y: "PYQ", o: ["21.5%", "25.4%", "28.6%", "23.0%"] },
+        { q: "District with highest population?", a: "Patna", y: "PYQ", o: ["Gaya", "Patna", "Muzaffarpur", "East Champaran"] },
+        { q: "District with lowest population?", a: "Sheikhpura", y: "PYQ", o: ["Lakhisarai", "Sheikhpura", "Arwal", "Sheohar"] },
+        { q: "Most urbanized district of Bihar?", a: "Patna", y: "PYQ", o: ["Munger", "Bhagalpur", "Patna", "Muzaffarpur"] },
+        { q: "Percentage of urban population in Bihar?", a: "11.3%", y: "PYQ", o: ["11.3%", "15.5%", "20.1%", "25.0%"] },
+        { q: "Bihar rank in SC population percentage?", a: "15th", y: "PYQ", o: ["10th", "12th", "15th", "20th"] },
+        { q: "Scheduled Tribe (ST) population % in Bihar?", a: "1.3%", y: "PYQ", o: ["1.3%", "5.5%", "0.9%", "2.5%"] },
+        { q: "District with highest ST population %?", a: "West Champaran", y: "PYQ", o: ["Jamui", "West Champaran", "Katihar", "Banka"] },
+        { q: "The rural population percentage in Bihar?", a: "88.7%", y: "PYQ", o: ["75.5%", "88.7%", "92.0%", "80.5%"] },
+        { q: "Which district has the lowest female literacy rate?", a: "Saharasa", y: "PYQ", o: ["Purnia", "Saharasa", "Araria", "Katihar"] },
+        { q: "Bihar's position in India by literacy rate?", a: "Last", y: "PYQ", o: ["25th", "28th", "Last", "27th"] },
+        { q: "Total population of Bihar as per 2011 Census?", a: "10.41 Crore", y: "PYQ", o: ["8.5 Crore", "10.41 Crore", "12.5 Crore", "9.8 Crore"] },
+        { q: "Most populated city in Bihar?", a: "Patna", y: "PYQ", o: ["Gaya", "Muzaffarpur", "Patna", "Bhagalpur"] }
+      ]
+    },
+    { title: "Topic 5: AEDO Special & Geography Aptitude (Mock)", summary: "Assistant Education Development Officer (AEDO) focus: Education geography, school mapping, and environmental geography of Bihar schools.", 
+      qs: [
+        { q: "Bihar Education Project Council (BEPC) is headquartered in?", a: "Patna", y: "AEDO Mock", o: ["Nalanda", "Patna", "Gaya", "Bhagalpur"] },
+        { q: "Which region of Bihar is most affected by Kosi floods impacting schools?", a: "Seemanchal", y: "AEDO Mock", o: ["Magadh", "Seemanchal", "Mithila", "Anga"] },
+        { q: "Which district houses the Nav Nalanda Mahavihara University?", a: "Nalanda", y: "AEDO Mock", o: ["Patna", "Nalanda", "Gaya", "Vaishali"] },
+        { q: "In which district is the Vikramshila University ruins located?", a: "Bhagalpur", y: "AEDO Mock", o: ["Bhagalpur", "Patna", "Munger", "Nalanda"] },
+        { q: "Which geographical zone of Bihar has the highest density of Primary Schools?", a: "North Bihar Plain", y: "AEDO Mock", o: ["South Bihar Plain", "North Bihar Plain", "Southern Plateau", "Terai Region"] },
+        { q: "The 'Bihar School Examination Board' (BSEB) office is in?", a: "Patna", y: "AEDO Mock", o: ["Muzaffarpur", "Patna", "Gaya", "Darbhanga"] },
+        { q: "Seismic Zone IV covers which part of Bihar primarily?", a: "North Bihar", y: "AEDO Mock", o: ["South Bihar", "North Bihar", "West Bihar", "Central Bihar"] },
+        { q: "The 'Darbhanga Medical College' (DMCH) is located on the bank of which river?", a: "Bagmati", y: "AEDO Mock", o: ["Kosi", "Bagmati", "Kamla", "Gandak"] },
+        { q: "Which district is known for the historical 'Supaul' education hub?", a: "Supaul", y: "AEDO Mock", o: ["Madhepura", "Supaul", "Saharsa", "Araria"] },
+        { q: "Which tree is widely used for 'Sikki Grass' work in North Bihar schools?", a: "Sikki", y: "AEDO Mock", o: ["Bamboo", "Sikki", "Palm", "Neem"] },
+        { q: "Percentage of schools in Bihar located in flood-prone areas is approx?", a: "40%", y: "AEDO Mock", o: ["10%", "25%", "40%", "60%"] },
+        { q: "Central University of South Bihar (CUSB) is in which district?", a: "Gaya", y: "AEDO Mock", o: ["Patna", "Gaya", "Nalanda", "Munger"] },
+        { q: "The Indian Institute of Technology (IIT) Bihar is at?", a: "Bihta", y: "AEDO Mock", o: ["Bihta", "Danapur", "Hajipur", "Fatuha"] },
+        { q: "Bihar's first 'Floating Solar Power Plant' is in which district?", a: "Darbhanga", y: "AEDO Mock", o: ["Patna", "Darbhanga", "Bhagalpur", "Munger"] },
+        { q: "Which district of Bihar is a major producer of 'Betel leaves' (Magahi Paan)?", a: "Nawada", y: "AEDO Mock", o: ["Patna", "Nawada", "Gaya", "Nalanda"] },
+        { q: "Simultala Awasiya Vidyalaya is located in which district?", a: "Jamui", y: "AEDO Mock", o: ["Gaya", "Jamui", "Banka", "Munger"] },
+        { q: "Which district is known for 'Manjusha Art' (Anga region)?", a: "Bhagalpur", y: "AEDO Mock", o: ["Purnia", "Bhagalpur", "Katihar", "Banka"] },
+        { q: "In which year was the Bihar State Pollution Control Board established?", a: "1974", y: "AEDO Mock", o: ["1974", "1984", "1994", "2004"] },
+        { q: "Valmiki Tiger Reserve shares its border with which country?", a: "Nepal", y: "AEDO Mock", o: ["China", "Nepal", "Bhutan", "Bangladesh"] },
+        { q: "Which canal is the oldest in Bihar?", a: "Son Canal", y: "AEDO Mock", o: ["Triveni Canal", "Son Canal", "Kosi Canal", "Gandak Canal"] },
+        { q: "The 'Munger' rail-cum-road bridge is built over?", a: "Ganga", y: "AEDO Mock", o: ["Son", "Ganga", "Gandak", "Kosi"] },
+        { q: "Which district of Bihar is part of the 'Eastern Dedicated Freight Corridor'?", a: "Rohtas", y: "AEDO Mock", o: ["Patna", "Rohtas", "Gaya", "Arrah"] },
+        { q: "The main source of power in Bihar is?", a: "Thermal", y: "AEDO Mock", o: ["Hydro", "Solar", "Thermal", "Nuclear"] },
+        { q: "Which soil is best suited for Maize in North Bihar?", a: "New Alluvial", y: "AEDO Mock", o: ["Red Soil", "Bangar", "New Alluvial", "Terai"] },
+        { q: "The state tree of Bihar is?", a: "Peepal", y: "AEDO Mock", o: ["Mango", "Banyan", "Peepal", "Neem"] },
+        { q: "Number of Lok Sabha seats in Bihar?", a: "40", y: "AEDO Mock", o: ["30", "40", "50", "243"] },
+        { q: "Number of Rajya Sabha seats in Bihar?", a: "16", y: "AEDO Mock", o: ["12", "16", "20", "25"] },
+        { q: "Which is the second official language of Bihar?", a: "Urdu", y: "AEDO Mock", o: ["Maithili", "Bhojpuri", "Urdu", "Sanskrit"] },
+        { q: "In which district is the 'Sanjay Gandhi Biological Park'?", a: "Patna", y: "AEDO Mock", o: ["Gaya", "Patna", "Muzaffarpur", "Munger"] },
+        { q: "The longest highway in Bihar is?", a: "NH-31", y: "AEDO Mock", o: ["NH-2", "NH-31", "NH-57", "NH-28"] },
+        { q: "Which district has the 'Ghodakatora Lake'?", a: "Nalanda", y: "AEDO Mock", o: ["Gaya", "Nalanda", "Munger", "Patna"] },
+        { q: "The state animal of Bihar is?", a: "Ox (Gaur)", y: "AEDO Mock", o: ["Tiger", "Ox (Gaur)", "Elephant", "Lion"] },
+        { q: "The state bird of Bihar is?", a: "House Sparrow", y: "AEDO Mock", o: ["Peacock", "House Sparrow", "Pigeon", "Parrot"] },
+        { q: "How many districts share boundary with Jharkhand?", a: "8", y: "AEDO Mock", o: ["7", "8", "9", "10"] },
+        { q: "How many districts share boundary with Uttar Pradesh?", a: "8", y: "AEDO Mock", o: ["7", "8", "9", "10"] },
+        { q: "How many districts share boundary with West Bengal?", a: "3", y: "AEDO Mock", o: ["3", "4", "5", "6"] },
+        { q: "Which district has the highest urbanization rate after Patna?", a: "Munger", y: "AEDO Mock", o: ["Bhagalpur", "Munger", "Muzaffarpur", "Nalanda"] },
+        { q: "The 'Rajendra Prasad Central Agriculture University' is in?", a: "Samastipur (Pusa)", y: "AEDO Mock", o: ["Patna", "Gaya", "Samastipur (Pusa)", "Muzaffarpur"] },
+        { q: "The 'Nalanda Open University' is in?", a: "Patna", y: "AEDO Mock", o: ["Nalanda", "Patna", "Rajgir", "Gaya"] },
+        { q: "In which year did Bihar separate from Bengal?", a: "1912", y: "AEDO Mock", o: ["1905", "1912", "1936", "1947"] },
+        { q: "In which year did Orissa separate from Bihar?", a: "1936", y: "AEDO Mock", o: ["1912", "1936", "1956", "2000"] },
+        { q: "In which year did Jharkhand separate from Bihar?", a: "2000", y: "AEDO Mock", o: ["1998", "2000", "2001", "2005"] },
+        { q: "Which is the first Hindi newspaper of Bihar?", a: "Bihar Bandhu", y: "AEDO Mock", o: ["Bihar Bandhu", "Hindustan", "Prabhat Khabar", "Aaj"] },
+        { q: "The 'Kaimur Wildlife Sanctuary' is the largest in Bihar by?", a: "Area", y: "AEDO Mock", o: ["Species", "Area", "Tigers", "Birds"] },
+        { q: "Which district of Bihar has the 'Bheem Bandh' sanctuary?", a: "Munger", y: "AEDO Mock", o: ["Gaya", "Munger", "Jamui", "Banka"] },
+        { q: "The 'Kosi' Project was signed between India and Nepal in?", a: "1954", y: "AEDO Mock", o: ["1947", "1954", "1962", "1975"] },
+        { q: "Which district is known for the production of 'Graphite'?", a: "Jamui", y: "AEDO Mock", o: ["Rohtas", "Gaya", "Jamui", "Banka"] },
+        { q: "The river 'Bagmati' originates from?", a: "Shivpuri Range", y: "AEDO Mock", o: ["Mahabharat Range", "Shivpuri Range", "Shiwalik", "Annapurna"] },
+        { q: "Highest population density of rural Bihar is in?", a: "Darbhanga", y: "AEDO Mock", o: ["Sheohar", "Patna", "Darbhanga", "Saran"] },
+        { q: "The total length of National Highways in Bihar is approx?", a: "5940 km", y: "AEDO Mock", o: ["4500 km", "5940 km", "6500 km", "7000 km"] }
+      ]
+    }
 ];
 
-// Note: In the real app, I would populate all 150 objects here.
-// Below is the rendering logic.
+const container = document.getElementById('quiz-container');
+let correct = 0, wrong = 0, total = 0;
 
-let score = 0;
-let attempted = 0;
+quizData.forEach((section, sIdx) => {
+    const sHeader = document.createElement('div');
+    sHeader.className = 'topic-sec';
+    sHeader.innerHTML = `<h3>${section.title}</h3><p style="font-size:0.9rem">${section.summary}</p>`;
+    container.appendChild(sHeader);
 
-function renderQuiz(data, containerId) {
-    const container = document.getElementById(containerId);
-    data.forEach((item, idx) => {
+    section.qs.forEach((q, qIdx) => {
         const card = document.createElement('div');
         card.className = 'q-card';
         card.innerHTML = `
-            <span class="year-tag">${item.y}</span>
-            <div class="question">${item.q}</div>
-            <div class="options" id="opt-group-${containerId}-${idx}">
-                ${item.opts.map(o => `<button class="opt-btn" onclick="checkAnswer(this, '${o}', '${item.a}', 'opt-group-${containerId}-${idx}')">${o}</button>`).join('')}
+            <span class="year-tag">${q.y}</span>
+            <div style="font-weight:600; margin-top:8px">${total+1}. ${q.q}</div>
+            <div class="opts" id="opt-grp-${total}">
+                ${q.o.map(opt => `<button onclick="check(this, '${opt}', '${q.a}', ${total})">${opt}</button>`).join('')}
             </div>
         `;
         container.appendChild(card);
+        total++;
     });
-}
+});
 
-function checkAnswer(btn, selected, correct, groupId) {
-    const group = document.getElementById(groupId);
-    const buttons = group.querySelectorAll('.opt-btn');
+function check(btn, sel, ans, id) {
+    const grp = document.getElementById(`opt-grp-${id}`);
+    const btns = grp.querySelectorAll('button');
+    btns.forEach(b => b.disabled = true);
     
-    if(btn.disabled) return;
-    
-    attempted++;
-    document.getElementById('total').innerText = attempted;
-    buttons.forEach(b => b.disabled = true);
-
-    if(selected === correct) {
+    if(sel === ans) {
         btn.classList.add('correct');
-        score++;
-        document.getElementById('score').innerText = score;
+        correct++;
+        document.getElementById('c-count').innerText = correct;
     } else {
         btn.classList.add('wrong');
-        buttons.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+        wrong++;
+        document.getElementById('w-count').innerText = wrong;
+        btns.forEach(b => { if(b.innerText === ans) b.classList.add('correct'); });
     }
+    
+    const attempted = correct + wrong;
+    document.getElementById('score-pct').innerText = Math.round((correct / attempted) * 100);
 }
-
-// Populate the sections (In a full file, these arrays would be full 100 + 50)
-renderQuiz(pyqs.filter(q => q.y.includes('BPSC') && !q.q.includes('River')), 'physical-pyqs');
-renderQuiz(pyqs.filter(q => q.q.includes('River') || q.q.includes('Lake')), 'river-pyqs');
-renderQuiz(pyqs.filter(q => q.y === 'AEDO Mock'), 'aedo-mocks');
-
 </script>
 </body>
 </html>
