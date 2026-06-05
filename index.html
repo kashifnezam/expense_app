@@ -1,151 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BPSC Geography: 150 Qs Portal</title>
-    <style>
-        :root { --primary: #004d40; --secondary: #00796b; --bg: #f4f7f6; --correct: #2e7d32; --wrong: #c62828; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
-        .nav { background: var(--primary); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 1000; }
-        .topic-sec { background: #fffde7; padding: 15px; margin: 10px; border-left: 5px solid #fbc02d; border-radius: 4px; }
-        .q-card { background: white; margin: 12px; padding: 18px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .year-tag { font-size: 0.75rem; color: #555; background: #e0f2f1; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
-        .opts { display: grid; gap: 10px; margin-top: 15px; }
-        button { padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; background: #fff; text-align: left; cursor: pointer; font-size: 0.95rem; }
-        .correct { background: var(--correct) !important; color: white; border-color: var(--correct); }
-        .wrong { background: var(--wrong) !important; color: white; border-color: var(--wrong); }
-        .stats { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 2px solid #ddd; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Room Technologies - Receipt Generator</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+    background:#f3f6fb;
+    font-family:Arial,sans-serif;
+}
+
+.receipt{
+    max-width:1000px;
+    margin:auto;
+    background:#fff;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(0,0,0,.1);
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid #e5e5e5;
+    padding-bottom:20px;
+}
+
+.logo-section{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.logo{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    border:4px solid #0d6efd;
+    object-fit:cover;
+}
+
+.company-name{
+    font-size:42px;
+    font-weight:700;
+    color:#051c4d;
+}
+
+.sub-title{
+    color:#0d6efd;
+    font-size:20px;
+    letter-spacing:4px;
+}
+
+.tagline{
+    color:#444;
+    margin-top:5px;
+}
+
+.title{
+    text-align:center;
+    font-size:55px;
+    font-weight:800;
+    color:#051c4d;
+    margin:40px 0 10px;
+}
+
+.subtitle{
+    text-align:center;
+    font-size:24px;
+    color:#444;
+    margin-bottom:30px;
+}
+
+.card-box{
+    border:1px solid #d8e1ff;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.section-title{
+    color:#0d6efd;
+    font-weight:700;
+    margin-bottom:15px;
+}
+
+.amount{
+    font-size:58px;
+    font-weight:bold;
+    color:#051c4d;
+}
+
+.paid{
+    font-size:50px;
+    color:#1ea84a;
+    font-weight:800;
+}
+
+.table td{
+    padding:12px;
+}
+
+.footer{
+    background:#051c4d;
+    color:white;
+    padding:15px;
+    border-radius:10px;
+    margin-top:20px;
+    text-align:center;
+}
+
+.form-control{
+    margin-bottom:10px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="nav">
-    <h2 style="margin:0">BPSC Geography Master Portal</h2>
-    <div style="font-size:0.85rem">100 PYQs + 50 AEDO Mock Questions</div>
+<div class="container py-4">
+
+<div class="row mb-4">
+<div class="col-md-12">
+
+<div class="card p-3">
+<h4>Receipt Data</h4>
+
+<input id="clientName" class="form-control" placeholder="Client Name" value="Karthik Didagur">
+
+<input id="amount" class="form-control" placeholder="Amount" value="699">
+
+<input id="purchase" class="form-control" placeholder="Purchase" value="Website to Android APK + App Bundle">
+
+<input id="date" class="form-control" value="05 June 2026">
+
+<input id="time" class="form-control" value="05:40 PM">
+
+<input id="txn" class="form-control" value="GPA123456789">
+
+<button class="btn btn-primary mt-2" onclick="updateReceipt()">
+Generate Receipt
+</button>
+
 </div>
 
-<div id="quiz-container"></div>
+</div>
+</div>
 
-<div class="stats">
-    <span>✅ Correct: <span id="c-count">0</span></span>
-    <span>❌ Wrong: <span id="w-count">0</span></span>
-    <span>Score: <span id="score-pct">0</span>%</span>
+<div class="receipt">
+
+<div class="header">
+
+<div class="logo-section">
+
+<img src="https://i.imgur.com/Q2BAOd2.png" class="logo">
+
+<div>
+<div class="company-name">FAMILY ROOM</div>
+<div class="sub-title">TECHNOLOGIES</div>
+<div class="tagline">• WORKING REMOTELY •</div>
+</div>
+
+</div>
+
+<div>
+<h5>Receipt No.</h5>
+<h4 id="receiptNo">FR-20260605-001</h4>
+</div>
+
+</div>
+
+<div class="title">
+PAYMENT RECEIVED ACKNOWLEDGEMENT
+</div>
+
+<div class="subtitle">
+Thank you! Your payment has been successfully received.
+</div>
+
+<div class="row">
+
+<div class="col-md-6">
+
+<div class="card-box">
+
+<div class="section-title">
+CLIENT DETAILS
+</div>
+
+<h2 id="rClient">
+Karthik Didagur
+</h2>
+
+<p>India</p>
+
+</div>
+
+</div>
+
+<div class="col-md-6">
+
+<div class="card-box text-center">
+
+<div class="section-title">
+PAYMENT STATUS
+</div>
+
+<div class="paid">
+PAID ✓
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card-box">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<div class="section-title">
+AMOUNT RECEIVED
+</div>
+
+<div class="amount">
+₹<span id="rAmount">699</span>
+</div>
+
+</div>
+
+<div class="col-md-6">
+
+<div class="section-title">
+PAYMENT METHOD
+</div>
+
+<h2>Google Pay</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col-md-6">
+
+<div class="card-box">
+
+<div class="section-title">
+PAYMENT INFORMATION
+</div>
+
+<table class="table">
+
+<tr>
+<td>Date</td>
+<td id="rDate">05 June 2026</td>
+</tr>
+
+<tr>
+<td>Time</td>
+<td id="rTime">05:40 PM</td>
+</tr>
+
+<tr>
+<td>Transaction ID</td>
+<td id="rTxn">GPA123456789</td>
+</tr>
+
+<tr>
+<td>Method</td>
+<td>Google Pay</td>
+</tr>
+
+<tr>
+<td>Paid To</td>
+<td>Family Room Technologies</td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<div class="col-md-6">
+
+<div class="card-box">
+
+<div class="section-title">
+PURCHASE DETAILS
+</div>
+
+<h5 id="rPurchase">
+Website to Android APK + App Bundle
+</h5>
+
+<hr>
+
+<p>
+Development service for converting website into Android APK and App Bundle.
+</p>
+
+<br>
+
+<div>
+<b>Authorized Signature</b>
+<br>
+Family Room Technologies
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+Thank you for your trust and business!
+</div>
+
+</div>
+
 </div>
 
 <script>
-const quizData = [
-    { title: "Topic 1: Physical Geography & Borders (PYQs)", summary: "Bihar is a landlocked state with a rectangular shape. It occupies 2.86% of India's area and ranks 12th. The northern border with Nepal is 726 km long.", 
-      qs: [
-        { q: "What is the total geographical area of Bihar?", a: "94,163 sq. km", y: "45th BPSC", o: ["92,163 sq. km", "94,163 sq. km", "96,163 sq. km", "98,163 sq. km"] },
-        { q: "Bihar is located between which latitudes?", a: "24°20' N to 27°31' N", y: "39th BPSC", o: ["24°20' N to 27°31' N", "21°10' N to 24°30' N", "25° N to 28° N", "20° N to 23° N"] },
-        { q: "Which district of Bihar does not share a border with any other state?", a: "Patna", y: "BPSC Pre", o: ["Siwan", "Gaya", "Patna", "Purnia"] },
-        { q: "How many districts of Bihar share a border with Nepal?", a: "7", y: "66th BPSC", o: ["6", "7", "8", "9"] },
-        { q: "Which district of Bihar is the northernmost?", a: "West Champaran", y: "PYQ", o: ["Kishanganj", "West Champaran", "Sitamarhi", "Araria"] },
-        { q: "The highest peak of Bihar, Someshwar Fort, is located in?", a: "West Champaran", y: "64th BPSC", o: ["Nalanda", "Gaya", "Rohtas", "West Champaran"] },
-        { q: "What is the distance of Bihar from North to South?", a: "345 km", y: "PYQ", o: ["483 km", "345 km", "512 km", "400 km"] },
-        { q: "What is the distance of Bihar from East to West?", a: "483 km", y: "PYQ", o: ["483 km", "345 km", "450 km", "500 km"] },
-        { q: "Which state borders Bihar to the South?", a: "Jharkhand", y: "PYQ", o: ["Odisha", "Jharkhand", "Chhattisgarh", "West Bengal"] },
-        { q: "Bihar rank in India in terms of population (2011)?", a: "3rd", y: "66th BPSC", o: ["1st", "2nd", "3rd", "4th"] },
-        { q: "Through which district does the River Ganga enter Bihar?", a: "Buxar", y: "62nd BPSC", o: ["Buxar", "Munger", "Patna", "Katihar"] },
-        { q: "The average height of Bihar from sea level is?", a: "53 meters", y: "55th BPSC", o: ["40 meters", "53 meters", "60 meters", "70 meters"] },
-        { q: "Which district has the largest area in Bihar?", a: "West Champaran", y: "PYQ", o: ["Gaya", "Patna", "West Champaran", "Rohtas"] },
-        { q: "Which district has the smallest area in Bihar?", a: "Sheohar", y: "PYQ", o: ["Sheikhpura", "Sheohar", "Lakhisarai", "Arwal"] },
-        { q: "The state flower of Bihar is?", a: "Marigold", y: "PYQ", o: ["Lotus", "Rose", "Marigold", "Kachnar"] },
-        { q: "What is the shape of Bihar state?", a: "Rectangular", y: "PYQ", o: ["Square", "Triangular", "Rectangular", "Irregular"] },
-        { q: "Number of Administrative Divisions (Pramandal) in Bihar?", a: "9", y: "PYQ", o: ["7", "8", "9", "11"] },
-        { q: "Which district share boundary with West Bengal and Nepal both?", a: "Kishanganj", y: "PYQ", o: ["Katihar", "Kishanganj", "Araria", "Purnia"] },
-        { q: "The Vindhyan rock system is found in which part of Bihar?", a: "South-West", y: "65th BPSC", o: ["North-West", "South-West", "South-East", "North-East"] },
-        { q: "Which geological structure is the oldest in Bihar?", a: "Dharwad Rocks", y: "65th BPSC", o: ["Dharwad Rocks", "Vindhyan Rocks", "Tertiary Rocks", "Quaternary Rocks"] },
-        { q: "Terai region in Bihar is found along the border of?", a: "Nepal", y: "PYQ", o: ["Uttar Pradesh", "Jharkhand", "Nepal", "West Bengal"] },
-        { q: "Which district is known as 'Silk City'?", a: "Bhagalpur", y: "PYQ", o: ["Gaya", "Patna", "Bhagalpur", "Darbhanga"] },
-        { q: "The 'Dalmiangar' in Bihar is famous for?", a: "Cement", y: "PYQ", o: ["Silk", "Cement", "Leather", "Sugar"] },
-        { q: "Where is the only National Park of Bihar situated?", a: "West Champaran", y: "67th BPSC", o: ["Gaya", "Kaimur", "West Champaran", "Munger"] },
-        { q: "The 'Vikramshila Gangetic Dolphin Sanctuary' is in?", a: "Bhagalpur", y: "PYQ", o: ["Patna", "Munger", "Bhagalpur", "Katihar"] }
-      ]
-    },
-    { title: "Topic 2: Rivers & Drainage Systems (PYQs)", summary: "Ganga divides Bihar into two halves. North Bihar rivers are perennial (fed by Himalayas) while South Bihar rivers are seasonal (fed by Plateaus).", 
-      qs: [
-        { q: "Which river is called the 'Sorrow of Bihar'?", a: "Kosi", y: "48th BPSC", o: ["Gandak", "Bagmati", "Kosi", "Kamla"] },
-        { q: "At which point does the Son river join the Ganga?", a: "Danapur", y: "59th BPSC", o: ["Danapur", "Fatwah", "Hajipur", "Munger"] },
-        { q: "The River Ganga leaves Bihar at which district?", a: "Katihar", y: "62nd BPSC", o: ["Bhagalpur", "Katihar", "Munger", "Purnia"] },
-        { q: "Which river joins Ganga at Sonepur?", a: "Gandak", y: "PYQ", o: ["Son", "Gandak", "Ghaghra", "Punpun"] },
-        { q: "The origin of Son River is?", a: "Amarkantak", y: "PYQ", o: ["Himalayas", "Amarkantak", "Chota Nagpur", "Maikal Range"] },
-        { q: "Which river flows through the historical city of Gaya?", a: "Phalgu", y: "PYQ", o: ["Son", "Phalgu", "Punpun", "Kiul"] },
-        { q: "Triveni Canal receives water from which river?", a: "Gandak", y: "PYQ", o: ["Son", "Kosi", "Gandak", "Kamla"] },
-        { q: "Which river is notorious for changing its course frequently?", a: "Kosi", y: "PYQ", o: ["Gandak", "Kosi", "Mahananda", "Bagmati"] },
-        { q: "Where is Kakolat Waterfall situated?", a: "Nawada", y: "PYQ", o: ["Nawada", "Gaya", "Rohtas", "Kaimur"] },
-        { q: "Which is the longest river in Bihar?", a: "Ganga", y: "PYQ", o: ["Kosi", "Ganga", "Gandak", "Son"] },
-        { q: "River Karmanasa joins Ganga near?", a: "Chausa", y: "PYQ", o: ["Chausa", "Munger", "Patna", "Fatwah"] },
-        { q: "Kanwar Lake, an oxbow lake, is in which district?", a: "Begusarai", y: "67th BPSC", o: ["Khagaria", "Begusarai", "Darbhanga", "Saharsa"] },
-        { q: "The Punpun river joins Ganga at?", a: "Fatwah", y: "PYQ", o: ["Fatwah", "Danapur", "Hajipur", "Munger"] },
-        { q: "Which river basin is the largest in Bihar?", a: "Ganga Basin", y: "PYQ", o: ["Kosi Basin", "Ganga Basin", "Son Basin", "Gandak Basin"] },
-        { q: "The 'Barh' (Flood) problem in North Bihar is mainly caused by?", a: "Kosi", y: "PYQ", o: ["Son", "Gandak", "Kosi", "Punpun"] },
-        { q: "Which river forms the western boundary of Bihar with UP?", a: "Karmanasa", y: "PYQ", o: ["Son", "Karmanasa", "Gandak", "Ghaghra"] },
-        { q: "Telhar Kund waterfall is in which district?", a: "Kaimur", y: "PYQ", o: ["Rohtas", "Kaimur", "Nawada", "Gaya"] },
-        { q: "The Mahatma Gandhi Setu connects Patna to?", a: "Hajipur", y: "PYQ", o: ["Sonepur", "Hajipur", "Arrah", "Chapra"] },
-        { q: "Karkat Waterfall is located in?", a: "Kaimur", y: "PYQ", o: ["Kaimur", "Rohtas", "Nawada", "Jamui"] },
-        { q: "Length of Ganga within Bihar is approximately?", a: "445 km", y: "PYQ", o: ["425 km", "445 km", "500 km", "550 km"] },
-        { q: "The river Mahananda joins Ganga at?", a: "Katihar", y: "PYQ", o: ["Purnia", "Katihar", "Malda", "Bhagalpur"] },
-        { q: "Kamla River originates from?", a: "Mahabharat Range", y: "PYQ", o: ["Amarkantak", "Mahabharat Range", "Chota Nagpur", "Shiwalik"] },
-        { q: "Bagmati river enters Bihar in which district?", a: "Sitamarhi", y: "PYQ", o: ["Madhubani", "Sitamarhi", "Araria", "Supaul"] },
-        { q: "The 'Sapt Kosi' system is related to which river?", a: "Kosi", y: "PYQ", o: ["Gandak", "Kosi", "Kamla", "Mahananda"] },
-        { q: "Which river is also known as Niranjana?", a: "Phalgu", y: "PYQ", o: ["Son", "Phalgu", "Punpun", "Kiul"] }
-      ]
-    },
-    { title: "Topic 3: Climate, Soil & Agriculture (PYQs)", summary: "Bihar has a Humid Subtropical climate. Soils range from Terai in the North to Alluvial in the plains and Red-Yellow in the plateau. Purnia is key for Jute.", 
-      qs: [
-        { q: "What type of climate is found in Bihar?", a: "Monsoon", y: "PYQ", o: ["Tropical", "Equatorial", "Monsoon", "Desert"] },
-        { q: "Which district in Bihar receives the highest rainfall?", a: "Kishanganj", y: "67th BPSC", o: ["Purnia", "Araria", "Kishanganj", "West Champaran"] },
-        { q: "Which is the hottest district in Bihar?", a: "Gaya", y: "PYQ", o: ["Patna", "Gaya", "Bhagalpur", "Munger"] },
-        { q: "The 'Hathiya' rain in Bihar occurs during?", a: "Retreating Monsoon", y: "PYQ", o: ["Summer", "Retreating Monsoon", "Winter", "Advancing Monsoon"] },
-        { q: "Old Alluvial soil in Bihar is known as?", a: "Bangar", y: "PYQ", o: ["Khadar", "Bangar", "Balsundari", "Tal"] },
-        { q: "New Alluvial soil in Bihar is known as?", a: "Khadar", y: "PYQ", o: ["Khadar", "Bangar", "Terai", "Balmat"] },
-        { q: "Which district is leading in Jute production in Bihar?", a: "Purnia", y: "63rd BPSC", o: ["Katihar", "Purnia", "Araria", "Kishanganj"] },
-        { q: "Balsundari soil is primarily found in?", a: "Saharsa/Purnia", y: "PYQ", o: ["Gaya/Patna", "Saharsa/Purnia", "Rohtas/Kaimur", "Buxar"] },
-        { q: "Which district is famous for Shahi Litchi?", a: "Muzaffarpur", y: "PYQ", o: ["Vaishali", "Muzaffarpur", "Patna", "Saran"] },
-        { q: "The 'Rice Bowl' of Bihar is?", a: "Rohtas", y: "PYQ", o: ["Bhojpur", "Rohtas", "Patna", "Aurangabad"] },
-        { q: "Makhana production is highest in?", a: "Madhubani", y: "PYQ", o: ["Darbhanga", "Madhubani", "Patna", "Gaya"] },
-        { q: "Tea cultivation is done in which district?", a: "Kishanganj", y: "PYQ", o: ["Purnia", "Kishanganj", "Araria", "Katihar"] },
-        { q: "Which district has the highest forest cover %?", a: "Kaimur", y: "PYQ", o: ["Jamui", "Rohtas", "Kaimur", "West Champaran"] },
-        { q: "Total forest cover in Bihar is approximately?", a: "7.84%", y: "PYQ", o: ["6.5%", "7.84%", "9.2%", "10.5%"] },
-        { q: "Which district has the lowest forest cover?", a: "Sheikhpura", y: "PYQ", o: ["Sheohar", "Sheikhpura", "Arwal", "Jehanabad"] },
-        { q: "Sugar industry in Bihar is concentrated in?", a: "North-West Bihar", y: "PYQ", o: ["South Bihar", "North-West Bihar", "East Bihar", "Central Bihar"] },
-        { q: "Which soil has the highest lime content?", a: "Terai Soil", y: "PYQ", o: ["Alluvial", "Terai Soil", "Red Soil", "Tal Soil"] },
-        { q: "Paddy is the most important crop of Bihar, followed by?", a: "Maize", y: "PYQ", o: ["Wheat", "Maize", "Jute", "Sugarcane"] },
-        { q: "Average annual rainfall of Bihar is?", a: "112-125 cm", y: "PYQ", o: ["80 cm", "100 cm", "112-125 cm", "150 cm"] },
-        { q: "Where is the Barauni Oil Refinery located?", a: "Begusarai", y: "PYQ", o: ["Begusarai", "Patna", "Munger", "Bhagalpur"] },
-        { q: "Pyrite is exclusively found in which district of Bihar?", a: "Rohtas", y: "PYQ", o: ["Gaya", "Jamui", "Rohtas", "Munger"] },
-        { q: "Gold reserves have been found recently in which district?", a: "Jamui", y: "PYQ", o: ["Jamui", "Munger", "Rohtas", "Banka"] },
-        { q: "Uranium is found in which district of Bihar?", a: "Gaya", y: "PYQ", o: ["Gaya", "Nawada", "Jamui", "Rohtas"] },
-        { q: "Which mineral is Nawada famous for?", a: "Mica", y: "PYQ", o: ["Iron", "Mica", "Coal", "Bauxite"] },
-        { q: "The climate of Bihar is influenced mainly by?", a: "Himalayas", y: "PYQ", o: ["Aravallis", "Himalayas", "Western Ghats", "Desert"] }
-      ]
-    },
-    { title: "Topic 4: Census & Demographic Geography (PYQs)", summary: "Bihar has the highest population density in India (1106). Literacy is 61.8%. Rohtas leads in literacy.", 
-      qs: [
-        { q: "What is the population density of Bihar (2011)?", a: "1106", y: "66th BPSC", o: ["980", "1106", "1020", "1210"] },
-        { q: "Which district has the highest population density?", a: "Sheohar", y: "PYQ", o: ["Patna", "Sheohar", "Darbhanga", "Vaishali"] },
-        { q: "Which district has the lowest population density?", a: "Kaimur", y: "PYQ", o: ["Jamui", "Kaimur", "Banka", "Rohtas"] },
-        { q: "Overall Literacy rate of Bihar (2011)?", a: "61.8%", y: "PYQ", o: ["51.5%", "61.8%", "71.2%", "65.5%"] },
-        { q: "Which district has the highest literacy rate?", a: "Rohtas", y: "PYQ", o: ["Patna", "Rohtas", "Munger", "Gaya"] },
-        { q: "Which district has the lowest literacy rate?", a: "Purnia", y: "PYQ", o: ["Purnia", "Saharasa", "Katihar", "Araria"] },
-        { q: "Female literacy rate in Bihar?", a: "51.5%", y: "PYQ", o: ["45.5%", "51.5%", "55.5%", "60.0%"] },
-        { q: "District with highest female literacy?", a: "Rohtas", y: "PYQ", o: ["Patna", "Rohtas", "Munger", "Siwan"] },
-        { q: "Sex ratio of Bihar (2011)?", a: "918", y: "PYQ", o: ["918", "933", "940", "910"] },
-        { q: "District with highest sex ratio?", a: "Gopalganj", y: "PYQ", o: ["Siwan", "Gopalganj", "Saran", "Kishanganj"] },
-        { q: "District with lowest sex ratio?", a: "Munger", y: "PYQ", o: ["Patna", "Munger", "Bhagalpur", "Khagaria"] },
-        { q: "Child sex ratio in Bihar?", a: "935", y: "PYQ", o: ["918", "935", "944", "927"] },
-        { q: "Decadal population growth rate (2001-2011)?", a: "25.4%", y: "PYQ", o: ["21.5%", "25.4%", "28.6%", "23.0%"] },
-        { q: "District with highest population?", a: "Patna", y: "PYQ", o: ["Gaya", "Patna", "Muzaffarpur", "East Champaran"] },
-        { q: "District with lowest population?", a: "Sheikhpura", y: "PYQ", o: ["Lakhisarai", "Sheikhpura", "Arwal", "Sheohar"] },
-        { q: "Most urbanized district of Bihar?", a: "Patna", y: "PYQ", o: ["Munger", "Bhagalpur", "Patna", "Muzaffarpur"] },
-        { q: "Percentage of urban population in Bihar?", a: "11.3%", y: "PYQ", o: ["11.3%", "15.5%", "20.1%", "25.0%"] },
-        { q: "Bihar rank in SC population percentage?", a: "15th", y: "PYQ", o: ["10th", "12th", "15th", "20th"] },
-        { q: "Scheduled Tribe (ST) population % in Bihar?", a: "1.3%", y: "PYQ", o: ["1.3%", "5.5%", "0.9%", "2.5%"] },
-        { q: "District with highest ST population %?", a: "West Champaran", y: "PYQ", o: ["Jamui", "West Champaran", "Katihar", "Banka"] },
-        { q: "The rural population percentage in Bihar?", a: "88.7%", y: "PYQ", o: ["75.5%", "88.7%", "92.0%", "80.5%"] },
-        { q: "Which district has the lowest female literacy rate?", a: "Saharasa", y: "PYQ", o: ["Purnia", "Saharasa", "Araria", "Katihar"] },
+
+function updateReceipt(){
+
+document.getElementById("rClient").innerText =
+document.getElementById("clientName").value;
+
+document.getElementById("rAmount").innerText =
+document.getElementById("amount").value;
+
+document.getElementById("rPurchase").innerText =
+document.getElementById("purchase").value;
+
+document.getElementById("rDate").innerText =
+document.getElementById("date").value;
+
+document.getElementById("rTime").innerText =
+document.getElementById("time").value;
+
+document.getElementById("rTxn").innerText =
+document.getElementById("txn").value;
+
+}
+
+</script>
+
+</body>
+    </html>        { q: "Which district has the lowest female literacy rate?", a: "Saharasa", y: "PYQ", o: ["Purnia", "Saharasa", "Araria", "Katihar"] },
         { q: "Bihar's position in India by literacy rate?", a: "Last", y: "PYQ", o: ["25th", "28th", "Last", "27th"] },
         { q: "Total population of Bihar as per 2011 Census?", a: "10.41 Crore", y: "PYQ", o: ["8.5 Crore", "10.41 Crore", "12.5 Crore", "9.8 Crore"] },
         { q: "Most populated city in Bihar?", a: "Patna", y: "PYQ", o: ["Gaya", "Muzaffarpur", "Patna", "Bhagalpur"] }
